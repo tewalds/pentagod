@@ -21,12 +21,8 @@
 class ScoreSimple {
 public:
 	static int getscore(const Board & board){
-		if(board.nummoves > 15)
-			return getscore2(board);
-		else
-			return getscore3(board);
+		return getscore2(board); //just use getscore2, since it seems to be the fastest
 	}
-
 
 //protected:
 /*

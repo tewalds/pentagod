@@ -20,14 +20,7 @@ public:
 
 	Board search_move(Board board){
 		board.scorefunc = scorefunc;
-/*
-		board.scorefunc = &ScoreSimple::getscore2;
-/ * /
-		if(board.nummoves < 15)
-			board.scorefunc = &ScoreSimple::getscore2;
-		else
-			board.scorefunc = &ScoreSimple::getscore3;
-//*/
+
 		Board children[288];
 		int numchildren = board.getchildren(children, true);
 		depths[maxdepth] = numchildren;

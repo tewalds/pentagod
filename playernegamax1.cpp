@@ -20,7 +20,7 @@ public:
 
 	Board search_move(Board board){
 		board.scorefunc = scorefunc;
-		
+
 		Board children[288];
 		int numchildren = board.getchildren(children, true);
 		depths[maxdepth] = numchildren;

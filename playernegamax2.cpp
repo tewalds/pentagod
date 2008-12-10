@@ -37,6 +37,8 @@ printf("%i best move(s)\n", num);
 
 		num = rand() % num;
 
+//num = 0; // make it consistent so different run times are comparable
+
 		return children[num];
 	}
 };

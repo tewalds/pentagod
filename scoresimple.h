@@ -18,6 +18,7 @@
  *
  */
 
+const int scoremap[] = {0, 1, 4, 16, 256, 100000000, 100000000};
 class ScoreSimple {
 public:
 	static int getscore(const Board & board){
@@ -29,9 +30,7 @@ public:
  * Gives the score for a single line of a varied length
  */
 	static int scoreline(int count){
-		if(count >= 5)
-			return 100000000; //100 million
-		return 1 << (2*count);
+		return scoremap[count];
 	}
 
 

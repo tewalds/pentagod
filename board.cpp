@@ -146,8 +146,8 @@ int Board::getchildren(Board * children, bool dohash, bool doscore){
 	}
 
 	if(doscore){
-		sortchildren(children, newboard); //insertion sort
-//		sortchildren2(children, newboard); //shell sort
+//		sortchildren(children, newboard); //insertion sort
+		sortchildren2(children, newboard); //shell sort
 //		qsort(children, (newboard - children), sizeof(Board), cmpboards); //built-in quick sort
 	}
 

@@ -8,18 +8,16 @@ Board::Board(){
 }
 
 Board::Board(int newgame){
-	turn = 1;
 	nummoves = 0;
 	score = 0;
 	outcome = -1;
 	for(int i = 0; i < 36; i++)
 		squares[i] = 0;
 
-	scorefunc = &ScoreSimple::getscore;
+	scorefunc = & ScoreSimple::getscore;
 }
 
-Board::Board(const char * str, int side){
-	turn = side;
+Board::Board(const char * str){
 	nummoves = 0;
 	score = 0;
 	outcome = -1;
@@ -167,11 +165,10 @@ void Board::move(int pos, int spin){
 	score = 0;
 
 	if(pos >= 0)
-		squares[pos] = turn;
+		squares[pos] = turn();
 	spinquadrant(spin);
 
 	nummoves++;
-	turn = (turn == 1 ? 2 : 1);
 }
 
 void Board::spinquadrant(int spin){

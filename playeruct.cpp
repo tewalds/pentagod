@@ -106,7 +106,7 @@ public:
 			result = 1 - walk_tree(node.children[maxi]);
 		}else if((result = node.board.won()) > 0 || node.board.nummoves == 36){
 		//game is done at this node
-			result = (result == 0 ? 0 : (result == node.board.turn ? -1 : 1));
+			result = (result == 0 ? 0 : (result == node.board.turn() ? -1 : 1));
 		}else if(node.visits < minvisitschildren || remainnodes <= 0){
 		//do random game on this node
 			result = rand_game(node.board);
@@ -131,23 +131,23 @@ public:
 		return result;
 	}
 
-	Board search_move(Board board){
+	Board search_move(Board board, bool output){
 		UTCNode root(board);
 
 		remainnodes = maxnodes;
 
 	//call a recursive function to find a node and do a random game from there
-		for(remainmoves = maxruns; remainmoves > 0; remainmoves--){
+		for(remainmoves = maxruns; remainmoves > 0; remainmoves--)
 			walk_tree(root);
-//			printf("\n");
+
+		if(output){
+		//print all the first depth results
+			for(int i = 0; i < root.numchildren; i++)
+				printf("%.2f/%i ", root.children[i].winrate(), root.children[i].visits);
+			printf("\n");
+
+			printf("Nodes generated: %i/%i\n", maxnodes - remainnodes, maxnodes);
 		}
-
-	//print all the first depth results
-		for(int i = 0; i < root.numchildren; i++)
-			printf("%.2f/%i ", root.children[i].winrate(), root.children[i].visits);
-		printf("\n");
-
-		printf("Nodes generated: %i/%i\n", maxnodes - remainnodes, maxnodes);
 
 	//return the best one
 		int maxi = 0;

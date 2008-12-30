@@ -4,15 +4,14 @@
 class Board {
 public:
 	char squares[36];
-	char turn;
 	char nummoves;
 	char outcome; // -1 unknown, 0 tie, 1,2 player win
-	int score;
-	int (*scorefunc)(const Board & board);
+	int32_t score;
+	int32_t (* scorefunc)(const Board & board);
 
 	Board();
 	Board(int newgame);
-	Board(const char * str, int side); //take a string of "0001020102...."
+	Board(const char * str); //take a string of "0001020102...."
 	void print() const;
 	char won_calc() const;
 
@@ -24,7 +23,11 @@ public:
 	uint64_t fullhash();
 	uint64_t simplehash();
 
-	int getscore(){
+	char turn() const {
+		return nummoves % 2 + 1;
+	}
+
+	int32_t getscore(){
 		if(!score)
 			score = scorefunc(*this);
 	//		score = ScoreSimple::getscore2(*this);

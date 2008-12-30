@@ -18,7 +18,7 @@ public:
 		printf("class PlayerNegamax1 - an aggressively pruning negamax player searching to depth %i\n", maxdepth);
 	}
 
-	Board search_move(Board board){
+	Board search_move(Board board, bool output){
 		board.scorefunc = scorefunc;
 
 		Board children[288];

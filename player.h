@@ -25,6 +25,7 @@ protected:
 public:
 	int totaltime;
 	int totalmoves;
+	int totalturns;
 
 	pthread_mutex_t lock; // The queue lock
 	bool playing;
@@ -35,14 +36,17 @@ public:
 		
 		totaltime = 0;
 		totalmoves = 0;
+		totalturns = 0;
 	}
 	virtual ~Player(){
 	}
 
 //move is the entry function for playing a move. It sets up the environment for search_move.
-	virtual Board move(const Board board) {
+	virtual Board move(const Board board, bool output = true) {
 		struct timeval start, finish;
 		unsigned int runtime;
+
+		totalturns++;
 
 		cleardepths();
 
@@ -50,14 +54,14 @@ public:
 
 		gettimeofday(&start, NULL);
 
-		Board ret = search_move(board);
+		Board ret = search_move(board, output);
 
 		gettimeofday(&finish, NULL);
 
 		runtime = ((finish.tv_sec*1000+finish.tv_usec/1000)-(start.tv_sec*1000+start.tv_usec/1000));
 		totaltime += runtime;
 
-		print_stats(runtime);
+		print_stats(runtime, output);
 
 		ret.scorefunc = oldscorefunc;
 		ret.score = 0;
@@ -68,12 +72,12 @@ public:
 	virtual void describe() = 0;
 
 	virtual void print_total_stats(){
-		printf("Total Moves: %u, Time: %u s, Moves/s: %u\n", totalmoves, totaltime/1000, (unsigned int)(1000.0*totalmoves/totaltime));
+		printf("Total Turns: %u, Moves: %u, Time: %u s, Moves/s: %u\n", totalturns, totalmoves, totaltime/1000, (unsigned int)(1000.0*totalmoves/totaltime));
 	}
 
 protected:
 
-	virtual void print_stats(unsigned int runtime) {
+	virtual void print_stats(unsigned int runtime, bool output = true) {
 		unsigned int moves = 0;
 
 		int mindepth, maxdepth;
@@ -84,17 +88,19 @@ protected:
 			moves += depths[maxdepth];
 		maxdepth--;
 		
-		printf("Moves: %u, Time: %u ms, Moves/s: %u\n", moves, runtime, (unsigned int)(1000.0*moves/runtime));
+		if(output){
+			printf("Moves: %u, Time: %u ms, Moves/s: %u\n", moves, runtime, (unsigned int)(1000.0*moves/runtime));
 
-		printf("Depth 0: %10i\n", depths[maxdepth]);
-		for(int i = maxdepth; i > mindepth; i--)
-			printf("Depth %i: %10i, %6.2f\n", maxdepth-i+1, depths[i-1], 1.0*depths[i-1]/depths[i]);
+			printf("Depth 0: %10i\n", depths[maxdepth]);
+			for(int i = maxdepth; i > mindepth; i--)
+				printf("Depth %i: %10i, %6.2f\n", maxdepth-i+1, depths[i-1], 1.0*depths[i-1]/depths[i]);
+		}
 
 		totalmoves += moves;
 	}
 
 //search_move must be implemented by the subclass. It takes a board state and returns the next board state
-	virtual Board search_move(const Board) = 0;
+	virtual Board search_move(const Board, bool output) = 0;
 
 
 	int negamax(Board & board, int depth, int alpha, int beta){
@@ -173,7 +179,7 @@ protected:
 	int rand_game(Board board){
 		int move;
 		int rot;
-		char turn = board.turn;
+		char turn = board.turn();
 		char won;
 	
 		while(board.won() < 0){

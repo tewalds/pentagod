@@ -18,18 +18,21 @@
  *
  */
 
-const int scoremap[] = {0, 1, 4, 16, 256, 100000000, 100000000};
 class ScoreSimple {
 public:
-	static int getscore(const Board & board){
-		return getscore2(board); //just use getscore2, since it seems to be the fastest
+	//Gives the score for a single line of a varied length
+	//actual definition at the bottom of the file because of C++ weirdness
+	static int32_t scoremap[7];
+
+	static int32_t getscore(const Board & board){
+		return getscore2(board, scoremap); //just use getscore2, since it seems to be the fastest
 	}
 
 //protected:
 /*
  * Gives the score for a single line of a varied length
  */
-	static int scoreline(int count){
+	static int32_t scoreline(int count){
 		return scoremap[count];
 	}
 
@@ -39,14 +42,14 @@ public:
  * and adds the value from scoreline(length) to the score. With a fairly full board, this is fast since
  * it can bail early on each line.
  */
-	static int getscore1(const Board & board){
-		return scoreside(board, board.turn) - scoreside(board, (board.turn == 1 ? 2 : 1) );
+	static int32_t getscore1(const Board & board){
+		return scoreside(board, board.turn()) - scoreside(board, (board.turn() == 1 ? 2 : 1) );
 	}
 
-	static int scoreside(const Board & board, const char side){
+	static int32_t scoreside(const Board & board, const char side){
 		char otherside = (side == 1 ? 2 : 1);
 
-		int scr = 0;
+		int32_t scr = 0;
 		int count, count2;
 
 	//check horizontal lines
@@ -267,10 +270,8 @@ public:
  * and adds the value from scoreline(length) to the score. With a fairly full board, this is fast since
  * it can bail early on each line.
  */
- 	static int getscore2(const Board & board){
-		char otherside = (board.turn == 1 ? 2 : 1);
-
-		int scr = 0;
+ 	static int32_t getscore2(const Board & board, const int32_t (& scoremap)[7]){
+		int32_t scr = 0;
 
 		int count, count2;
 		char side, side2, val;
@@ -279,7 +280,6 @@ public:
 		for(int y = 0; y < 6; y++){
 			count = 1;
 			side = 0;
-			side2 = 0;
 
 			if((val = board.squares[xy(1,y)])){
 				if(!side) side = val;
@@ -321,17 +321,16 @@ public:
 			}
 
 			if(side)
-				scr += (side == otherside ? -scoreline(count) : scoreline(count));
+				scr += (side == 1 ? scoremap[count] : -scoremap[count]);
 				
 			if(side2)
-				scr += (side2 == otherside ? -scoreline(count2) : scoreline(count2));
+				scr += (side2 == 1 ? scoremap[count2] : -scoremap[count2]);
 		}
 
 	//check vertical lines
 		for(int x = 0; x < 6; x++){
 			count = 1;
 			side = 0;
-			side2 = 0;
 
 			if((val = board.squares[xy(x,1)])){
 				if(!side) side = val;
@@ -373,17 +372,16 @@ public:
 			}
 
 			if(side)
-				scr += (side == otherside ? -scoreline(count) : scoreline(count));
+				scr += (side == 1 ? scoremap[count] : -scoremap[count]);
 				
 			if(side2)
-				scr += (side2 == otherside ? -scoreline(count2) : scoreline(count2));
+				scr += (side2 == 1 ? scoremap[count2] : -scoremap[count2]);
 		}
 
 	//check center diagonal lines
 		do{
 			count = 1;
 			side = 0;
-			side2 = 0;
 
 			if((val = board.squares[xy(1,1)])){
 				if(!side) side = val;
@@ -425,16 +423,15 @@ public:
 			}
 
 			if(side)
-				scr += (side == otherside ? -scoreline(count) : scoreline(count));
+				scr += (side == 1 ? scoremap[count] : -scoremap[count]);
 				
 			if(side2)
-				scr += (side2 == otherside ? -scoreline(count2) : scoreline(count2));
+				scr += (side2 == 1 ? scoremap[count2] : -scoremap[count2]);
 		}while(0);
 
 		do{
 			count = 1;
 			side = 0;
-			side2 = 0;
 
 			if((val = board.squares[xy(4,1)])){
 				if(!side) side = val;
@@ -476,10 +473,10 @@ public:
 			}
 
 			if(side)
-				scr += (side == otherside ? -scoreline(count) : scoreline(count));
+				scr += (side == 1 ? scoremap[count] : -scoremap[count]);
 				
 			if(side2)
-				scr += (side2 == otherside ? -scoreline(count2) : scoreline(count2));
+				scr += (side2 == 1 ? scoremap[count2] : -scoremap[count2]);
 		}while(0);
 
 
@@ -519,7 +516,7 @@ public:
 			}
 								
 			if(side)
-				scr += (side == otherside ? -scoreline(count) : scoreline(count));
+				scr += (side == 1 ? scoremap[count] : -scoremap[count]);
 		}while(0);
 
 		do{
@@ -557,7 +554,7 @@ public:
 			}
 								
 			if(side)
-				scr += (side == otherside ? -scoreline(count) : scoreline(count));
+				scr += (side == 1 ? scoremap[count] : -scoremap[count]);
 		}while(0);
 
 
@@ -596,7 +593,7 @@ public:
 			}
 								
 			if(side)
-				scr += (side == otherside ? -scoreline(count) : scoreline(count));
+				scr += (side == 1 ? scoremap[count] : -scoremap[count]);
 		}while(0);
 
 		do{
@@ -634,10 +631,10 @@ public:
 			}
 								
 			if(side)
-				scr += (side == otherside ? -scoreline(count) : scoreline(count));
+				scr += (side == 1 ? scoremap[count] : -scoremap[count]);
 		}while(0);
 
-		return scr;
+		return (board.turn() == 1 ? scr : -scr);
 	}
 
 
@@ -646,8 +643,8 @@ public:
  * the it's length value to each line. For boards with few pieces, it is fast, since it doesn't
  * do many operations for empty spaces. It can't bail early on lines that are used by both players though.
  */
-	static int getscore3(const Board & board){
-		int scr = 0;
+	static int32_t getscore3(const Board & board){
+		int32_t scr = 0;
 		
 		unsigned char count[32] = {
 			0,0,0,0,0,0,   0,0,0,0,0,0, //horizontal, left, right
@@ -876,17 +873,13 @@ public:
 		}
 
 
-
-		if(board.turn == 1)
-			return scr;
-		else
-			return -scr;
+		return (board.turn() == 1 ? scr : -scr);
 	}
 
 
 //a slower, but easier to read version of getscore3 above
-	static int getscore4(const Board & board){
-		int scr = 0;
+	static int32_t getscore4(const Board & board){
+		int32_t scr = 0;
 		
 		unsigned char count[32] = {
 			0,0,0,0,0,0,   0,0,0,0,0,0, //horizontal, left, right
@@ -957,15 +950,12 @@ public:
 		}
 
 
-
-		if(board.turn == 1)
-			return scr;
-		else
-			return -scr;
+		return (board.turn() == 1 ? scr : -scr);
 	}
 
 };
 
-#endif
+int32_t ScoreSimple::scoremap[7] = {0, 1, 4, 16, 256, 100000000, 100000000};
 
+#endif
 

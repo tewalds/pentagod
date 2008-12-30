@@ -19,7 +19,7 @@ public:
 	}
 
 	//Take a board position, and using the negamax algorythm, return the best new board position.
-	Board search_move(Board board){
+	Board search_move(Board board, bool output){
 		board.scorefunc = scorefunc;
 		
 		Board children[288];
@@ -34,7 +34,8 @@ public:
 		int num;
 		for(num = 1; num < numchildren && children[num].score == children[0].score; num++) ;
 
-printf("%i best move(s)\n", num);
+		if(output)
+			printf("%i best move(s)\n", num);
 
 		num = rand() % num;
 

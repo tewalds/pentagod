@@ -33,10 +33,11 @@ class Tournament {
 	int num_players;
 	Player **players;
 	int num_rounds;
-	int * results;
-	
 	
 public:
+	int * results;
+	unsigned int runtime;
+
 
 	Tournament(int nnum_players, Player **nplayers, int nnum_rounds = 1, int nnum_threads = MAX_THREADS){
 		num_players = nnum_players;
@@ -53,15 +54,24 @@ public:
 		if(num_threads > num_players/2)
 			num_threads = num_players/2;
 
-		for(int i = 0; i < num_threads; i++)
-			pthread_create(
-				&thread[i], 
-				NULL, 
-				(void* (*)(void*)) &Tournament::gameRunner, 
-				this);
+		num_threads = 1;
+
+		if(num_threads > 1){
+			for(int i = 0; i < num_threads; i++)
+				pthread_create(
+					&thread[i], 
+					NULL, 
+					(void* (*)(void*)) &Tournament::gameRunner, 
+					this);
+		}
 	}
 	
 	~Tournament(){
+		if(num_threads > 1){
+			for(int i = 0; i < num_threads; i++)
+				pthread_join(thread[i], NULL);
+		}
+	
 		delete[] results;
 	}
 
@@ -123,7 +133,7 @@ protected:
 		return NULL;
 	}
 
-	int run_game(Player *player1, Player *player2){
+	int run_game(Player *player1, Player *player2, bool output = true){
 		Player *players[2];
 		players[0] = player1;
 		players[1] = player2;
@@ -132,31 +142,36 @@ protected:
 
 		int turn = 0;
 
-		printf("--------------------------------------------------------------\n\n");
-		printf("Player 1: "); players[0]->describe();
-		printf("Player 2: "); players[1]->describe();
-		printf("\n");
+		if(output){
+			printf("--------------------------------------------------------------\n\n");
+			printf("Player 1: "); players[0]->describe();
+			printf("Player 2: "); players[1]->describe();
+			printf("\n");
+		}
 
 	//	gettimeofday(&start, NULL);
 
 		while(board.won() < 0){
-			printf("Turn %i, Player: %c\n", board.nummoves+1, (board.turn == 1 ? 'X' : 'O'));
+			if(output)
+				printf("Turn %i, Player: %c\n", board.nummoves+1, (board.turn() == 1 ? 'X' : 'O'));
 
-			board = players[turn]->move(board);
+			board = players[turn]->move(board, false);
 
-			board.print();
+			if(output)
+				board.print();
 
 			turn = !turn;
 		}
 	//	gettimeofday(&finish, NULL);
 
+		if(output){
+			if(board.won() > 0)
+				printf("Player %c won!\n", (board.won() == 1 ? 'X' : 'O'));
+			else
+				printf("Tie game!\n");
 
-		if(board.won() > 0)
-			printf("Player %c won!\n", (board.won() == 1 ? 'X' : 'O'));
-		else
-			printf("Tie game!\n");
-
-		printf("\n\n");
+			printf("\n\n");
+		}
 
 		return board.won();
 	}
@@ -165,7 +180,6 @@ public:
 
 	void run(){
 		struct timeval start, finish;
-		unsigned int runtime;
 
 		int num_games = num_players*(num_players-1)*num_rounds;
 
@@ -178,22 +192,38 @@ public:
 
 		gettimeofday(&start, NULL);
 
+		if(num_threads == 1){
+		//just play them directly
+			for(int a = 0; a < num_rounds; a++){
+				for(int i = 0; i < num_players; i++){
+					for(int j = 0; j < num_players; j++){
+						if(i != j){
+							int result = run_game(players[i], players[j], false);
 
-	//queue up the games to play
-		for(int a = 0; a < num_rounds; a++)
-			for(int i = 0; i < num_players; i++)
-				for(int j = 0; j < num_players; j++)
-					if(i != j)
-						games.push(new Pair(i, j));
+							if(result == 1)
+								results[i*num_players+j]++;
+							else if(result == 2)
+								results[j*num_players+i]++;
+						}
+					}
+				}
+			}
+		}else{
+		//queue up the games to play
+			for(int a = 0; a < num_rounds; a++)
+				for(int i = 0; i < num_players; i++)
+					for(int j = 0; j < num_players; j++)
+						if(i != j)
+							games.push(new Pair(i, j));
 
-	//wait for the games to finish playing
-		for(int i = 0; i < num_games; i++)
-			response.pop();
-
+		//wait for the games to finish playing
+			for(int i = 0; i < num_games; i++)
+				response.pop();
+		}
 
 		gettimeofday(&finish, NULL);
 		runtime = ((finish.tv_sec*1000+finish.tv_usec/1000)-(start.tv_sec*1000+start.tv_usec/1000));
-
+/*
 		printf("\n\n");
 
 
@@ -206,7 +236,7 @@ public:
 			printf("Player %i: ", i+1); players[i]->describe();
 		}
 		printf("\n");
-
+*/
 
 		for(int i = 0; i < num_players; i++){
 			printf("Player %i: ", i+1); players[i]->print_total_stats();

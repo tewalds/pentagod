@@ -15,7 +15,7 @@ public:
 	void print_stats(unsigned int runtime){
 	}
 
-	Board search_move(Board board){
+	Board search_move(Board board, bool output){
 		int x, y, r;
 		char buf[10];
 

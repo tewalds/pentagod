@@ -26,7 +26,7 @@ public:
 		totalmoves += nummoves;
 	}
 
-	Board search_move(Board board){
+	Board search_move(Board board, bool output){
 		Board children[288];
 		int numchildren = board.getchildren(children, true);
 
@@ -41,9 +41,11 @@ public:
 			for(int j = 0; j < numchildren; j++)
 				children[j].score += rand_game(children[j]);
 
-		for(int i = 0; i < numchildren; i++)
-			printf("%i ", children[i].score);
-		printf("\n");
+		if(output){
+			for(int i = 0; i < numchildren; i++)
+				printf("%i ", children[i].score);
+			printf("\n");
+		}
 
 
 	//return the best one

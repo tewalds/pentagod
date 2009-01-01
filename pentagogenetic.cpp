@@ -15,6 +15,8 @@ struct GenPlayer {
 	int32_t map[7];
 	Player *player;
 	int result;
+	int games;
+	int generation;
 };
 
 
@@ -116,6 +118,7 @@ int main(int argc, char **argv){
 	for(int i = 0; i < numtested; i++){
 		cpvec(players[i].map, init_map[i]);
 		players[i].result = 1; //initial weighting
+		players[i].generation = 0;
 	}
 
 	for(int i = numtested; i < numtested + numrandom; i++)
@@ -132,6 +135,7 @@ int main(int argc, char **argv){
 					players[i].map[j] += rand()%(2*j + 1) - j;
 				}while(players[i].map[j] <= players[i].map[j-1]);
 			}
+			players[i].generation = a+1;
 		}
 
 
@@ -139,6 +143,7 @@ int main(int argc, char **argv){
 		for(int i = 0; i < numtested + numrandom; i++){
 			players[i].player = new PlayerNegamax3(2, scorefuncs[i]);
 			players[i].result = 0;
+			players[i].games = 0;
 		}
 
 		int num_games = numtested*numrandom*2*numrounds;
@@ -149,7 +154,7 @@ int main(int argc, char **argv){
 			printf("%2i:", i+1);
 			for(int j = 1; j < 5; j++)
 				printf("%4i", players[i].map[j]);
-			printf("\n");
+			printf(" (%2i)\n", players[i].generation);
 		}
 
 		gettimeofday(&start, NULL);
@@ -174,6 +179,8 @@ int main(int argc, char **argv){
 						case 1: players[j].result--; players[i].result++; break;
 						case 2: players[j].result++; players[i].result--; break;
 					}
+					players[i].games += 2;
+					players[j].games += 2;
 				}
 			}
 		}
@@ -181,21 +188,23 @@ int main(int argc, char **argv){
 		gettimeofday(&finish, NULL);
 		int runtime = ((finish.tv_sec*1000+finish.tv_usec/1000)-(start.tv_sec*1000+start.tv_usec/1000));
 
+	//sort the players according to their results
+		qsort(players, numtested, sizeof(GenPlayer), cmp_players);             //sort the tested ones
+		qsort(players + numtested, numrandom, sizeof(GenPlayer), cmp_players); //sort the random ones
+
+	//output the results
 		printf("Results:                                                                       \n");
 		for(int i = 0; i < numtested + numrandom; i++){
 			printf("%2i:", i+1);
 			for(int j = 1; j < 5; j++)
 				printf("%4i", players[i].map[j]);
-			printf(" : %4i : ", players[i].result);
+			printf(" (%2i) -> %4i /%4i  : ", players[i].generation, players[i].result, players[i].games);
 			players[i].player->print_total_stats();
 		}
 		printf("Played %i games, Total Time: %i s, Average Time: %.2f s\n", num_games, runtime/1000, 1.0*runtime/(1000*num_games));
 		printf("-------------------------------------------\n");
 
 	//replace the worst tested with the best random
-		qsort(players, numtested, sizeof(GenPlayer), cmp_players);             //sort the tested ones
-		qsort(players + numtested, numrandom, sizeof(GenPlayer), cmp_players); //sort the random ones
-
 		for(int i = 0; i < numpromote; i++)
 			players[numtested - 1 - i] = players[numtested + i];
 

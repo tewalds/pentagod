@@ -18,8 +18,8 @@ struct GenPlayer {
 };
 
 
-const int numgenerations = 40;
-const int numrounds = 5;
+const int numgenerations = 20;
+const int numrounds = 10;
 const int numtested = 8;
 const int numrandom = 20;
 const int numpromote = 2; //number to move from the random to the tested group
@@ -155,9 +155,11 @@ int main(int argc, char **argv){
 		gettimeofday(&start, NULL);
 
 		int result;
+		int b = 0;
 		for(int a = 0; a < numrounds; a++){
 			for(int i = 0; i < numtested; i++){
 				for(int j = numtested; j < numrandom+numtested; j++){
+					printf("Playing game %i: round %i, player %i vs player %i   \r", ++b, a+1, i+1, j+1); fflush(0);
 					result = run_game(players[i].player, players[j].player);
 
 					switch(result){
@@ -165,6 +167,7 @@ int main(int argc, char **argv){
 						case 2: players[i].result--; players[j].result++; break;
 					}
 
+					printf("Playing game %i: round %i, player %i vs player %i   \r", ++b, a+1, j+1, i+1); fflush(0);
 					result = run_game(players[j].player, players[i].player);
 
 					switch(result){
@@ -174,10 +177,11 @@ int main(int argc, char **argv){
 				}
 			}
 		}
+
 		gettimeofday(&finish, NULL);
 		int runtime = ((finish.tv_sec*1000+finish.tv_usec/1000)-(start.tv_sec*1000+start.tv_usec/1000));
 
-		printf("Results:\n");
+		printf("Results:                                                                       \n");
 		for(int i = 0; i < numtested + numrandom; i++){
 			printf("%2i:", i+1);
 			for(int j = 1; j < 5; j++)

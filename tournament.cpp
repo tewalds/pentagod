@@ -155,7 +155,7 @@ protected:
 			if(output)
 				printf("Turn %i, Player: %c\n", board.nummoves+1, (board.turn() == 1 ? 'X' : 'O'));
 
-			board = players[turn]->move(board, false);
+			board = players[turn]->move(board, output);
 
 			if(output)
 				board.print();
@@ -178,7 +178,7 @@ protected:
 
 public:
 
-	void run(){
+	void run(bool output = true){
 		struct timeval start, finish;
 
 		int num_games = num_players*(num_players-1)*num_rounds;
@@ -198,7 +198,7 @@ public:
 				for(int i = 0; i < num_players; i++){
 					for(int j = 0; j < num_players; j++){
 						if(i != j){
-							int result = run_game(players[i], players[j], false);
+							int result = run_game(players[i], players[j], output);
 
 							if(result == 1)
 								results[i*num_players+j]++;

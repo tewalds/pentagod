@@ -138,7 +138,7 @@ protected:
 		players[0] = player1;
 		players[1] = player2;
 
-		Board board(1);
+		Board board(true);
 
 		int turn = 0;
 

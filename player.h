@@ -14,7 +14,7 @@
 
 class Player {
 protected:
-	unsigned int depths[36];
+	uint64_t depths[36];
 	int (*scorefunc)(const Board & board);
 
 	void cleardepths(){
@@ -23,9 +23,9 @@ protected:
 	}
 
 public:
-	int totaltime;
-	int totalmoves;
-	int totalturns;
+	uint64_t totaltime;
+	uint64_t totalmoves;
+	uint64_t totalturns;
 
 	pthread_mutex_t lock; // The queue lock
 	bool playing;
@@ -34,11 +34,16 @@ public:
 		pthread_mutex_init(&lock, NULL);
 		playing = false;
 		
+		resetstats();
+	}
+	virtual ~Player(){
+	}
+
+	virtual void resetstats(){
 		totaltime = 0;
 		totalmoves = 0;
 		totalturns = 0;
-	}
-	virtual ~Player(){
+		cleardepths();
 	}
 
 //move is the entry function for playing a move. It sets up the environment for search_move.
@@ -72,13 +77,13 @@ public:
 	virtual void describe() = 0;
 
 	virtual void print_total_stats(){
-		printf("Total Turns: %u, Moves: %u, Time: %u s, Moves/s: %u\n", totalturns, totalmoves, totaltime/1000, (unsigned int)(1000.0*totalmoves/totaltime));
+		printf("Total Turns: %lu, Moves: %lu, Time: %lu s, Moves/s: %u\n", totalturns, totalmoves, totaltime/1000, (unsigned int)(1000.0*totalmoves/totaltime));
 	}
 
 protected:
 
 	virtual void print_stats(unsigned int runtime, bool output = true) {
-		unsigned int moves = 0;
+		uint64_t moves = 0;
 
 		int mindepth, maxdepth;
 
@@ -89,11 +94,11 @@ protected:
 		maxdepth--;
 		
 		if(output){
-			printf("Moves: %u, Time: %u ms, Moves/s: %u\n", moves, runtime, (unsigned int)(1000.0*moves/runtime));
+			printf("Moves: %lu, Time: %u ms, Moves/s: %u\n", moves, runtime, (unsigned int)(1000.0*moves/runtime));
 
-			printf("Depth 0: %10i\n", depths[maxdepth]);
+			printf("Depth 0: %10lu\n", depths[maxdepth]);
 			for(int i = maxdepth; i > mindepth; i--)
-				printf("Depth %i: %10i, %6.2f\n", maxdepth-i+1, depths[i-1], 1.0*depths[i-1]/depths[i]);
+				printf("Depth %i: %10li, %6.2f\n", maxdepth-i+1, depths[i-1], 1.0*depths[i-1]/depths[i]);
 		}
 
 		totalmoves += moves;

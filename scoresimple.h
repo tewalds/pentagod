@@ -22,7 +22,7 @@ class ScoreSimple {
 public:
 	//Gives the score for a single line of a varied length
 	//actual definition at the bottom of the file because of C++ weirdness
-	static int32_t scoremap[7];
+	static const int32_t scoremap[7];
 
 	static int32_t getscore(const Board & board){
 		return getscore2(board, scoremap); //just use getscore2, since it seems to be the fastest
@@ -270,7 +270,7 @@ public:
  * and adds the value from scoreline(length) to the score. With a fairly full board, this is fast since
  * it can bail early on each line.
  */
- 	static int32_t getscore2(const Board & board, const int32_t (& scoremap)[7]){
+	static int32_t getscore2(const Board & board, const int32_t (& scoremap)[7]){
 		int32_t scr = 0;
 
 		int count, count2;
@@ -955,7 +955,7 @@ public:
 
 };
 
-int32_t ScoreSimple::scoremap[7] = {0, 1, 4, 16, 256, 100000000, 100000000};
+const int32_t ScoreSimple::scoremap[7] = {0, 1, 4, 16, 256, 100000000, 100000000};
 
 #endif
 

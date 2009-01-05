@@ -50,7 +50,7 @@ int run_game(Player *player1, Player *player2){
 	players[0] = player1;
 	players[1] = player2;
 
-	Board board(1);
+	Board board(true);
 
 	int turn = 0;
 

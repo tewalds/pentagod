@@ -10,7 +10,8 @@ public:
 	int32_t (* scorefunc)(const Board & board);
 
 	Board();
-	Board(int newgame);
+	Board(bool newgame);
+	Board(uint64_t hash);
 	Board(const char * str); //take a string of "0001020102...."
 	void print() const;
 	char won_calc() const;
@@ -20,8 +21,8 @@ public:
 	void spinquadrant(int spin);
 	void spinpartcw(int x, int y);
 	void spinpartccw(int x, int y);
-	uint64_t fullhash();
-	uint64_t simplehash();
+	uint64_t fullhash() const;
+	uint64_t simplehash() const;
 
 	char turn() const {
 		return nummoves % 2 + 1;

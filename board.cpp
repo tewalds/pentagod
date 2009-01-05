@@ -7,7 +7,7 @@
 Board::Board(){
 }
 
-Board::Board(int newgame){
+Board::Board(bool newgame){
 	nummoves = 0;
 	score = 0;
 	outcome = -1;
@@ -15,6 +15,22 @@ Board::Board(int newgame){
 		squares[i] = 0;
 
 	scorefunc = & ScoreSimple::getscore;
+}
+
+Board::Board(uint64_t hash){
+	nummoves = 0;
+	score = 0;
+	outcome = -1;
+
+	for(int i = 0; i < 36; i++){
+		squares[35 - i] = hash % 3;
+		hash /= 3;
+
+		if(squares[35 - i])
+			nummoves++;
+	}
+
+	scorefunc = &ScoreSimple::getscore;
 }
 
 Board::Board(const char * str){
@@ -220,7 +236,7 @@ inline void Board::spinpartccw(int x, int y){
 	squares[xy(x+0, y+1)] = temp;
 }
 
-uint64_t Board::fullhash(){
+uint64_t Board::fullhash() const{
 	uint64_t hash = 0;
 	uint64_t h = 0;
 
@@ -302,7 +318,7 @@ uint64_t Board::fullhash(){
 }
 
 //return a hash of this board, as is.
-uint64_t Board::simplehash(){
+uint64_t Board::simplehash() const{
 	uint64_t hash = 0;
 
 	for(int i = 0; i < 36; i++)

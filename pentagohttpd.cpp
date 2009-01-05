@@ -173,7 +173,7 @@ void handle_request_ai(struct evhttp_request *req, void *arg){
 	evhttp_parse_query(req->uri, &options);
 
 	int depth = 2;
-	Board board = Board(0); //start with an empty board, replacing it below if a one is supplied
+	Board board = Board(true); //start with an empty board, replacing it below if a one is supplied
 
 	if((ptr = evhttp_find_header(&options, "l")))
 		depth = atoi(ptr);

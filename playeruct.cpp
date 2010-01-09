@@ -22,7 +22,7 @@ public:
 		children = NULL;
 	}
 	
-	UTCNode(Board nboard){
+	UTCNode(const Board & nboard){
 		visits = 0;
 		score = 0;
 		numchildren = 0;
@@ -37,9 +37,14 @@ public:
 
 	void addChildren(int num, Board *boards){
 		numchildren = num;
-		children = new UTCNode[num];
+		UTCNode * temp = new UTCNode[num];
 		for(int i = 0; i < num; i++)
-			children[i].board = boards[i];
+			temp[i] = UTCNode(boards[i]);
+
+		if(children == NULL) //atomic CAS!
+			children = temp;
+		else
+			delete[] temp;
 	}
 
 	inline double winrate(){
@@ -55,14 +60,16 @@ class PlayerUCT : public Player {
 	int remainmoves;
 	int remainnodes;
 	
-	static const int minvisitschildren = 5; //number of visits to a node before expanding its children nodes
-	static const int minvisitspriority = 3; //give priority to this node if it has less than this many visits
+	int minvisitschildren; //number of visits to a node before expanding its children nodes
+	int minvisitspriority; //give priority to this node if it has less than this many visits
 public:
 
-	PlayerUCT(int numruns, int numnodes = 0, double exploration = 1.0){
+	PlayerUCT(int numruns, int numnodes = 1000000000, double exploration = 1.0, int mvchildren = 1, int mvpriority = 1){
 		maxnodes = numnodes;
 		maxruns = numruns;
 		explore = exploration;
+		minvisitschildren = mvchildren;
+		minvisitspriority = mvpriority;
 	}
 
 	~PlayerUCT(){
@@ -77,57 +84,58 @@ public:
 		totalmoves += maxruns;
 	}
 
-	int walk_tree(UTCNode & node){
-		int result;
+	int walk_tree(UTCNode & node, int depth){
+		int result, won = -1;
 
-		node.visits++;
+		node.visits++; //atomic INCR
 
 		if(node.children){
 		//choose a child and recurse
-			double val, maxval = -1000000000;
-			double logvisits = log(node.visits);
 			int maxi = 0;
-			UTCNode * child;
+			if(node.visits < node.numchildren/5){
+				maxi = rand() % node.numchildren;
+			}else{
+				double val, maxval = -1000000000;
+				double logvisits = log(node.visits);
+				UTCNode * child;
 
-			for(int i = 0; i < node.numchildren; i++){
-				child = & node.children[i];
+				for(int i = 0; i < node.numchildren; i++){
+					child = & node.children[i];
 
-				if(child->visits < minvisitspriority) // give priority to nodes that have few or no visits
-					val = 10000 - child->visits*1000 + rand()%100;
-				else
-					val = child->winrate() + explore*sqrt(logvisits/(5*child->visits));
+					if(child->visits < minvisitspriority) // give priority to nodes that have few or no visits
+						val = 10000 - child->visits*1000 + rand()%100;
+					else
+						val = child->winrate() + explore*sqrt(logvisits/(5*child->visits));
 
-				if(maxval < val){
-					maxval = val;
-					maxi = i;
+					if(maxval < val){
+						maxval = val;
+						maxi = i;
+					}
 				}
 			}
 
-			result = 1 - walk_tree(node.children[maxi]);
-		}else if((result = node.board.won()) > 0 || node.board.nummoves == 36){
-		//game is done at this node
-			result = (result == 0 ? 0 : (result == node.board.turn() ? -1 : 1));
-		}else if(node.visits < minvisitschildren || remainnodes <= 0){
+			result = - walk_tree(node.children[maxi], depth+1);
+		}else if(node.visits <= minvisitschildren || remainnodes <= 0){
 		//do random game on this node
-			result = rand_game(node.board);
+			won = rand_game(node.board);
+			depths[depth]++;
+		}else if((won = node.board.won()) >= 0){
+			//already done
 		}else{
 		//create children
 			Board children[(36-node.board.nummoves)*8];
-			int numchildren = node.board.getchildren(children, (node.board.nummoves < 20), false);
+			int numchildren = node.board.getchildren(children, (depth < 3), false);
 
 			node.addChildren(numchildren, children);
-			remainnodes -= numchildren;
+			remainnodes -= numchildren; //atomic
 
-		//do random game on a random child. Could recurse, but this is faster
-			int i = rand() % numchildren;
-
-			result = 1 - rand_game(node.children[i].board);
-
-			node.children[i].visits++;
-			node.children[i].score += (result < 0) + (result <= 0);
+		//recurse on a random child
+			result = - walk_tree(node.children[rand() % numchildren], depth+1);
 		}
-		
-		node.score += (result > 0) + (result >= 0);
+		if(won >= 0)
+			result = (won == 0 ? 0 : won == node.board.turn() ? -1 : 1);
+
+		node.score += result+1; //atomic
 		return result;
 	}
 
@@ -138,7 +146,7 @@ public:
 
 	//call a recursive function to find a node and do a random game from there
 		for(remainmoves = maxruns; remainmoves > 0; remainmoves--)
-			walk_tree(root);
+			walk_tree(root, 0);
 
 		if(output){
 		//print all the first depth results

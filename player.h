@@ -77,7 +77,7 @@ public:
 	virtual void describe() = 0;
 
 	virtual void print_total_stats(){
-		printf("Total Turns: %lu, Moves: %lu, Time: %lu s, Moves/s: %u\n", totalturns, totalmoves, totaltime/1000, (unsigned int)(1000.0*totalmoves/totaltime));
+		printf("Total Turns: %llu, Moves: %llu, Time: %llu s, Moves/s: %u\n", totalturns, totalmoves, totaltime/1000, (unsigned int)(1000.0*totalmoves/totaltime));
 	}
 
 protected:
@@ -94,11 +94,11 @@ protected:
 		maxdepth--;
 		
 		if(output){
-			printf("Moves: %lu, Time: %u ms, Moves/s: %u\n", moves, runtime, (unsigned int)(1000.0*moves/runtime));
+			printf("Moves: %llu, Time: %u ms, Moves/s: %u\n", moves, runtime, (unsigned int)(1000.0*moves/runtime));
 
-			printf("Depth 0: %10lu\n", depths[maxdepth]);
+			printf("Depth 0: %10llu\n", depths[maxdepth]);
 			for(int i = maxdepth; i > mindepth; i--)
-				printf("Depth %i: %10li, %6.2f\n", maxdepth-i+1, depths[i-1], 1.0*depths[i-1]/depths[i]);
+				printf("Depth %i: %10llu, %6.2f\n", maxdepth-i+1, depths[i-1], 1.0*depths[i-1]/depths[i]);
 		}
 
 		totalmoves += moves;
@@ -182,12 +182,10 @@ protected:
 
 //play a random game starting from a board state, and return the results of who won	
 	int rand_game(Board board){
-		int move;
-		int rot;
-		char turn = board.turn();
+		int move, rot;
 		char won;
 	
-		while(board.won() < 0){
+		while((won = board.won()) < 0){
 			do{
 				move = rand() % 36;
 			}while(board.squares[move]); // don't choose a position that is already taken
@@ -195,11 +193,7 @@ protected:
 			
 			board.move(move, rot);
 		}
-
-		won = board.won();
-		if(!won) 		return 0;
-		if(won == turn)	return -1;
-		else			return 1;
+		return won;
 	}
 };
 

@@ -32,14 +32,19 @@ public:
 
 		nummoves = maxruns * numchildren;
 
+		depths[0] += nummoves;
+
 	//reset all the scores, they're going to be calculated by montecarlo below
 		for(int i = 0; i < numchildren; i++)
 			children[i].score = 0;
 
 	//run maxruns random games, evenly distributed between all the children
-		for(int i = 0; i < maxruns; i++)
-			for(int j = 0; j < numchildren; j++)
-				children[j].score += rand_game(children[j]);
+		for(int i = 0; i < maxruns; i++){
+			for(int j = 0; j < numchildren; j++){
+				int result = rand_game(children[j]);
+				children[j].score += (result == 0 ? 1 : result == board.turn() ? 0 : 2);
+			}
+		}
 
 		if(output){
 			for(int i = 0; i < numchildren; i++)

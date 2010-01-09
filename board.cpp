@@ -316,7 +316,23 @@ uint64_t Board::fullhash() const{
 
 	return hash;
 }
+/*
+//same as below (I think), but translates to more efficient cpu instructions
+//return a hash of this board, as is.
+uint64_t Board::simplehash() const{
+	uint64_t hash = 0;
+	uint64_t parts[6];
 
+	for(int i = 0; i < 6; i++){
+		parts[i] = 0;
+		for(int j = 0; j < 6; j++)
+			parts[i] = (parts[i] * 3) + squares[xy(j,i)];
+	}
+	for(int i = 0; i < 6; i++)
+		hash = hash*729 + parts[i];
+	return hash;
+}
+/*/
 //return a hash of this board, as is.
 uint64_t Board::simplehash() const{
 	uint64_t hash = 0;
@@ -326,4 +342,4 @@ uint64_t Board::simplehash() const{
 
 	return hash;
 }
-
+//*/

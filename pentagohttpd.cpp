@@ -238,7 +238,7 @@ void handle_http_static(struct evhttp_request *req, void *arg){
 	if(*ptr == '\0'){
 		strncat(filename, start, 1000 - (ptr - start) - strlen(filename));
 	}else if(*ptr == '?'){
-		strncat(filename, start, (ptr - start < (unsigned int)(1000 - strlen(filename)) ? ptr - start : 1000 - strlen(filename)) );
+		strncat(filename, start, ((unsigned int)(ptr - start) < (unsigned int)(1000 - strlen(filename)) ? ptr - start : 1000 - strlen(filename)) );
 	}
 	//if it included .. , just ignore the url altogether
 

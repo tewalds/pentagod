@@ -115,10 +115,10 @@ char Board::won_calc() const {
 	    side == squares[xy(5,1)])
 		wonside |= side;
 
-	if(nummoves >= 36 || wonside == 3) //wonside == 3 when both sides win simultaneously
+	if(wonside == 3) //wonside == 3 when both sides win simultaneously
 		return 0;
 	if(wonside == 0)
-		return -1;
+		return (nummoves >= 36 ? 0 : -1);
 	return wonside;
 }
 

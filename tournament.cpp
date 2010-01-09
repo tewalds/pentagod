@@ -223,7 +223,7 @@ public:
 
 		gettimeofday(&finish, NULL);
 		runtime = ((finish.tv_sec*1000+finish.tv_usec/1000)-(start.tv_sec*1000+start.tv_usec/1000));
-/*
+//*
 		printf("\n\n");
 
 
@@ -236,7 +236,7 @@ public:
 			printf("Player %i: ", i+1); players[i]->describe();
 		}
 		printf("\n");
-*/
+//*/
 
 		for(int i = 0; i < num_players; i++){
 			printf("Player %i: ", i+1); players[i]->print_total_stats();

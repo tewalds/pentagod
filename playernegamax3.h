@@ -1,9 +1,10 @@
 
-#include "player.h"
+#ifndef _PLAYERNEGAMAX3_H_
+#define _PLAYERNEGAMAX3_H_
 
-class PlayerNegamax3 : public Player {
-	int maxdepth;
-	
+#include "playernegamax.h"
+
+class PlayerNegamax3 : public PlayerNegamax {
 public:
 
 	PlayerNegamax3(int depth, int (*nscorefunc)(const Board & board) = &ScoreSimple::getscore){
@@ -15,7 +16,7 @@ public:
 	}
 
 	void describe(){
-		printf("class PlayerNegamax3 - a moderately aggressive pruning negamax player searching to depth %i\n", maxdepth);
+		printf("class PlayerNegamax3 - an openmp, moderately aggressive pruning negamax player searching to depth %i\n", maxdepth);
 	}
 
 	Board search_move(Board board, bool output){
@@ -23,18 +24,22 @@ public:
 
 		Board children[288];
 		int numchildren = board.getchildren(children, true);
-		depths[maxdepth] = numchildren;
+		depths[0] = numchildren;
 
 		int ret;
 		int alpha = 2000000000;
 
 		//using alpha+1 distinguishes between a move equivalent to a previous one, and one cut off by the pruning
 		//without losing much of the speed advantage of passing in an alpha value
+		#pragma omp parallel for schedule(dynamic)
 		for(int i = 0; i < numchildren; i++){
-			children[i].score = ret = negamax(children[i], maxdepth, -2000000000, alpha+1);
+			children[i].score = ret = negamax(children[i], 1, -2000000000, alpha+1);
 
-			if(alpha > ret)
-				alpha = ret;
+			#pragma omp critical
+			{
+				if(alpha > ret)
+					alpha = ret;
+			}
 		}
 
 		Board::sortchildren(children, children + numchildren); //insertion sort
@@ -52,4 +57,6 @@ public:
 		return children[num];
 	}
 };
+
+#endif
 

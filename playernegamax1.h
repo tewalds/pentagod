@@ -1,10 +1,10 @@
 
-#include "player.h"
+#include "playernegamax.h"
 
-class PlayerNegamax1 : public Player {
-	int maxdepth;
-	
+class PlayerNegamax1 : public PlayerNegamax {
 public:
+
+	PlayerNegamax1(){ }
 
 	PlayerNegamax1(int depth, int (*nscorefunc)(const Board & board) = &ScoreSimple::getscore){
 		maxdepth = depth;
@@ -23,7 +23,7 @@ public:
 
 		Board children[288];
 		int numchildren = board.getchildren(children, true);
-		depths[maxdepth] = numchildren;
+		depths[0] = numchildren;
 
 		int best = 0; //index to element in children with the highest score
 		int ret;
@@ -31,7 +31,7 @@ public:
 
 	//can only choose one best move, because all after it also claim to be best, even if they're not
 		for(int i = 0; i < numchildren; i++){
-			ret = negamax(children[i], maxdepth, -2000000000, alpha);
+			ret = negamax(children[i], 1, -2000000000, alpha);
 
 			if(alpha > ret){
 				alpha = ret;

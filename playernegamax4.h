@@ -1,13 +1,14 @@
 
-#include "player.h"
+#ifndef _PLAYERNEGAMAX4_H_
+#define _PLAYERNEGAMAX4_H_
+
+#include "playernegamax.h"
 #include <pthread.h>
 #include "tqueue.h"
 
 #define MAX_THREADS 64
 
-class PlayerNegamax4 : public Player {
-	int maxdepth;
-
+class PlayerNegamax4 : public PlayerNegamax {
 	pthread_t thread[MAX_THREADS];
 	int numthreads;
 
@@ -96,3 +97,4 @@ public:
 	}
 };
 
+#endif

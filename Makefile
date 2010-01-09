@@ -17,7 +17,7 @@ DATE		= `date +%Y-%m-%d-%H-%M`
 ifdef DEBUG
 	CFLAGS		+= -DUSE_DEBUG -g3 
 else
-	CFLAGS		+= -O3 -funroll-loops
+	CFLAGS		+= -O3 -funroll-loops -fopenmp
 endif
 
 #profile with callgrind, works well with DEBUG mode

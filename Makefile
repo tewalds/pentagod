@@ -1,6 +1,6 @@
 
 CC			= g++
-CFLAGS		= -Wall -fno-strict-aliasing
+CFLAGS		= -Wall -fno-strict-aliasing -march=native
 
 GAME        = pentago
 GAME_L	    = -lpthread -lrt
@@ -17,7 +17,7 @@ DATE		= `date +%Y-%m-%d-%H-%M`
 ifdef DEBUG
 	CFLAGS		+= -DUSE_DEBUG -g3 
 else
-	CFLAGS		+= -O3 -funroll-loops -fopenmp
+	CFLAGS		+= -O3 -funroll-loops -fopenmp  -ffast-math -funsafe-math-optimizations -ftree-vectorize -ftree-loop-im -mfpmath=sse -mmmx -msse -msse2 -msse3 -m3dnow
 endif
 
 #profile with callgrind, works well with DEBUG mode

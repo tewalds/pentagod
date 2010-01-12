@@ -5,6 +5,7 @@
 #include <time.h>
 #include <sys/time.h>
 
+#include "atomic.h"
 #include "board.h"
 #include "scoresimple.h"
 #include "scoresecond.h"
@@ -33,6 +34,7 @@ class Tournament {
 	int num_players;
 	Player **players;
 	int num_rounds;
+	int gamenum;
 	
 public:
 	int * results;
@@ -116,14 +118,13 @@ protected:
 				tourney->players[i]->playing = false;
 				tourney->players[j]->playing = false;
 
-				pthread_mutex_unlock(&(tourney->players[i]->lock));
-				pthread_mutex_unlock(&(tourney->players[j]->lock));
-
-
 				if(result == 1)
 					tourney->results[i*num+j]++;
 				else if(result == 2)
 					tourney->results[j*num+i]++;
+
+				pthread_mutex_unlock(&(tourney->players[i]->lock));
+				pthread_mutex_unlock(&(tourney->players[j]->lock));
 
 				tourney->response.push(NULL);
 				delete pair;
@@ -134,6 +135,7 @@ protected:
 	}
 
 	int run_game(Player *player1, Player *player2, bool output = true){
+		INCR(gamenum);
 		Player *players[2];
 		players[0] = player1;
 		players[1] = player2;
@@ -144,6 +146,7 @@ protected:
 
 		if(output){
 			printf("--------------------------------------------------------------\n\n");
+			printf("Game %i:\n", gamenum);
 			printf("Player 1: "); players[0]->describe();
 			printf("Player 2: "); players[1]->describe();
 			printf("\n");
@@ -179,6 +182,7 @@ protected:
 public:
 
 	void run(bool output = true){
+		gamenum = 0;
 		struct timeval start, finish;
 
 		int num_games = num_players*(num_players-1)*num_rounds;

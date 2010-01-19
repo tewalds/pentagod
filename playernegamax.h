@@ -12,21 +12,19 @@ protected:
 		if(depth > maxdepth || board.won() >= 0) //end of depth search, or won
 			return board.score;
 
-		int ret;
 		Board children[(36-board.nummoves)*8];
 		int numchildren = board.getchildren(children, (depth < maxdepth  && board.nummoves < 20));
 
 		depths[depth] += numchildren;
 
 		for(int i = 0; i < numchildren; i++){
-			ret = - negamax(children[i], depth + 1, -beta, -alpha);
+			int value = -negamax(children[i], depth + 1, -beta, -alpha);
 
-			if(ret > alpha)
-				alpha = ret;
+			if(value > alpha)
+				alpha = value;
 
-			//the following if statement constitutes alpha-beta pruning
 			if(alpha >= beta)
-				return beta;
+				return beta; //alpha for fail-soft
 		}
 		return alpha;
 	}

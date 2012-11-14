@@ -14,7 +14,8 @@ using namespace std;
 #include "xorshift.h"
 #include "log.h"
 
-//#define bitcount(x) std::bitset(x).count()
+//#include <bitset>
+//#define bitcount(x) std::bitset<typeof(x)>(x).count()
 #define bitcount(x) __builtin_popcountll(x)
 //#include "bitcount.h"
 //#define bitcount(n) parallel_bitcount(n)
@@ -23,8 +24,6 @@ using namespace std;
 //#define bitcount(x) precomputed_bitcount(x)
 //#define bitcount(x) precomputed_bitcount2(x)
 
-#define set_bit(  x, b) x |=  (1ull<<(b))
-#define unset_bit(x, b) x &= ~(1ull<<(b))
 
 /*
 bits are laid out in this pattern so that:

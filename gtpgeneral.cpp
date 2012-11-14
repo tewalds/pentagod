@@ -70,8 +70,6 @@ GTPResponse PentagoGTP::play(const string & pos, int toplay){
 	if(toplay != game.toplay())
 		return GTPResponse(false, "It is the other player's turn!");
 
-	logerr("outcome: " + to_str((int)game.getboard().won()) + ", move: " + Move(pos).to_s());
-
 	if(game.getboard().won() >= 0)
 		return GTPResponse(false, "The game is already over.");
 

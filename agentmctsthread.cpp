@@ -130,7 +130,8 @@ bool AgentMCTS::MCTSThread::create_children(const Board & board, Node * node, in
 			}
 		}
 
-		add_knowledge(after, node, child);
+		if(player->knowledge)
+			add_knowledge(after, node, child);
 		nummoves++;
 	}
 
@@ -268,7 +269,8 @@ bool AgentMCTS::do_backup(Node * node, Node * backup, int toplay){
 }
 
 void AgentMCTS::MCTSThread::add_knowledge(const Board & board, Node * node, Node * child){
-	child->know = board.score_calc();
+	if(player->win_score > 0)
+		child->know = player->win_score * board.score_calc();
 }
 
 ///////////////////////////////////////////

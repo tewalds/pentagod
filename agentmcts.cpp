@@ -177,6 +177,8 @@ AgentMCTS::AgentMCTS() {
 	prunesymmetry = true;
 	gcsolved    = 100000;
 
+	win_score = 1;
+
 	instantwin  = 0;
 
 	//no threads started until a board is set

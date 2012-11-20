@@ -149,7 +149,7 @@ public:
 			if(expnum > 0)
 				val = exp.avg();
 
-			if(knowledge && know > 0){
+			if(knowledge && know != 0){
 				if(expnum <= 1)
 					val += 0.01f * know;
 				else if(expnum < 1000) //knowledge is only useful with little experience
@@ -259,6 +259,9 @@ public:
 	uint  visitexpand;//number of visits before expanding a node
 	bool  prunesymmetry; //prune symmetric children from the move list, useful for proving but likely not for playing
 	uint  gcsolved;   //garbage collect solved nodes or keep them in the tree, assuming they meet the required amount of work
+
+//knowledge
+	int win_score;
 
 //rollout
 	int   instantwin;     //look for instant wins in rollouts

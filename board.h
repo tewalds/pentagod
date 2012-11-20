@@ -273,7 +273,7 @@ public:
 
 		if(m == M_SWAP){
 			swap(sides[1], sides[2]);
-			to_play = 0;
+			to_play = 1;
 			return true;
 		}
 

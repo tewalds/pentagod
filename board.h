@@ -236,17 +236,18 @@ public:
 	bool move_rand(XORShift_uint64 & rand){
 		//find an empty space, this should take log2(bits set) to converge, assuming a good and fast RNG
 		uint64_t move = (~sides[0]) & 0xFFFFFFFFFULL; // bits set for all empty positions
-//		while(bitcount(move) > 1) { // if there's only one bit left, that's our move
-		while(move & (move-1)) {
-			uint64_t mask = rand();
+		uint64_t mask;
+		do {
+			mask = rand();
 			if((move & mask) > 0) // don't let it drop to no bits set
 				move &= mask;
-		}
+		} while(move & (move-1));
+//		} while(bitcount(move) > 1); // if there's only one bit left, that's our move
 
 		sides[to_play] |= move;
 
-		uint64_t rotation = rand();
-		uint64_t direction = rotation & (1 << 2);
+		uint64_t rotation = (mask >> 36); //mask is already a random number, so just re-use the unused high bits
+		uint64_t direction = rotation & 0x4;
 		uint64_t quadrant = rotation & 0x3;
 
 		if (direction) {

@@ -9,7 +9,6 @@
 using namespace std;
 
 #include "move.h"
-#include "hashset.h"
 #include "xorshift.h"
 
 //#include <bitset>
@@ -37,66 +36,15 @@ class Board{
 	static const uint64_t lookup3to2[4096]; // convert base 3 for one line of 6 to base 2, used in hashing
 	static const int      scoremap[6];      // how many points a given line with how many pieces is worth
 
-public:
-	class MoveIterator { //only returns valid moves...
-		const Board & board;
-		Move move;
-		bool unique;
-		HashSet hashes;
-	public:
-		MoveIterator(const Board & b, bool Unique) : board(b), move(Move(M_SWAP)), unique(Unique) {
-			if(board.outcome >= 0){
-				move = Move(36, 8); //already done
-			} else {
-				if(unique)
-					hashes.init(board.moves_avail());
-				++(*this); //find the first valid move
-			}
-		}
-
-		const Move & operator * ()  const { return move; }
-		const Move * operator -> () const { return & move; }
-		bool done() const { return (move.l >= 36); }
-		bool operator == (const Board::MoveIterator & rhs) const { return (move == rhs.move); }
-		bool operator != (const Board::MoveIterator & rhs) const { return (move != rhs.move); }
-		MoveIterator & operator ++ (){ //prefix form
-			while(true){
-				move.r++;
-				if(move.r >= 8){
-					move.r = 0;
-					do{
-						move.l++;
-						if(move.l >= 36) //done
-							return *this;
-					}while(!board.valid_move_fast(move));
-				}
-				if(unique){
-					uint64_t h = board.test_hash(move);
-					if(!hashes.add(h))
-						continue;
-				}
-				break;
-			}
-			return *this;
-		}
-		MoveIterator operator ++ (int){ //postfix form, discouraged from being used
-			MoveIterator newit(*this);
-			++(*this);
-			return newit;
-		}
-	};
-
-private:
 	uint64_t sides[3]; // sides[0] = sides[1] | sides[2];
 	uint8_t nummoves;
 	uint8_t to_play;
 	mutable int8_t outcome; //-3 = unknown, 0 = tie, 1,2 = player win
 	mutable int cached_score;
 	static const int default_score = 0xDEADBEEF;
-
+public:
 	static const short unique_depth = 5; //update and test rotations/symmetry with less than this many pieces on the board
 
-public:
 	Board(){
 		sides[0] = 0;
 		sides[1] = 0;
@@ -196,13 +144,10 @@ public:
 		return b.won_calc();
 	}
 
-	MoveIterator moveit(bool unique = false) const {
-		return MoveIterator(*this, (unique ? nummoves <= unique_depth : false));
-	}
-
 	bool move(const Move & m){
 		assert(outcome < 0);
 
+		//TODO: only call valid_move if the move didn't come from an iterator?
 		if(!valid_move(m))
 			return false;
 
@@ -390,7 +335,6 @@ private:
 		uint64_t m = 0xFFull << (q*9);
 		return (b & ~m) | (((b & m) >> 6) & m) | (((b & m) << 2) & m);
 	}
-
-
 };
+
 

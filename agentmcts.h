@@ -227,8 +227,8 @@ public:
 		void run(); //thread runner, calls iterate on each iteration
 		void iterate(); //handles each iteration
 		void walk_tree(Board & board, Node * node, int depth);
-		bool create_children(Board & board, Node * node, int toplay);
-		void add_knowledge(Board & board, Node * node, Node * child);
+		bool create_children(const Board & board, Node * node, int toplay);
+		void add_knowledge(const Board & board, Node * node, Node * child);
 		Node * choose_move(const Node * node, int toplay) const;
 
 		int rollout(Board & board, Move move, int depth);

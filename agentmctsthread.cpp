@@ -1,5 +1,6 @@
 
 #include "agentmcts.h"
+#include "moveiterator.h"
 #include <cmath>
 #include <string>
 #include "string.h"
@@ -101,7 +102,7 @@ bool sort_node_know(const AgentMCTS::Node & a, const AgentMCTS::Node & b){
 	return (a.know > b.know);
 }
 
-bool AgentMCTS::MCTSThread::create_children(Board & board, Node * node, int toplay){
+bool AgentMCTS::MCTSThread::create_children(const Board & board, Node * node, int toplay){
 	if(!node->children.lock())
 		return false;
 
@@ -110,13 +111,14 @@ bool AgentMCTS::MCTSThread::create_children(Board & board, Node * node, int topl
 
 	Node * child = temp.begin(),
 	     * end   = temp.end();
-	Board::MoveIterator move = board.moveit(player->prunesymmetry);
+	MoveIterator move(board, player->prunesymmetry);
 	int nummoves = 0;
 	for(; !move.done() && child != end; ++move, ++child){
 		*child = Node(*move);
+		const Board & after = move.board();
 
 		if(player->minimax){
-			child->outcome = board.test_win(*move);
+			child->outcome = after.won();
 
 			if(child->outcome == toplay){ //proven win from here, don't need children
 				node->outcome = child->outcome;
@@ -128,7 +130,7 @@ bool AgentMCTS::MCTSThread::create_children(Board & board, Node * node, int topl
 			}
 		}
 
-		add_knowledge(board, node, child);
+		add_knowledge(after, node, child);
 		nummoves++;
 	}
 
@@ -265,7 +267,7 @@ bool AgentMCTS::do_backup(Node * node, Node * backup, int toplay){
 	return (node->outcome >= 0);
 }
 
-void AgentMCTS::MCTSThread::add_knowledge(Board & board, Node * node, Node * child){
+void AgentMCTS::MCTSThread::add_knowledge(const Board & board, Node * node, Node * child){
 	child->know = board.score_calc();
 }
 

@@ -1,5 +1,6 @@
 
 #include "pentagogtp.h"
+#include "moveiterator.h"
 
 GTPResponse PentagoGTP::gtp_echo(vecstr args){
 	return GTPResponse(true, implode(args, " "));
@@ -53,7 +54,7 @@ GTPResponse PentagoGTP::gtp_undo(vecstr args){
 
 GTPResponse PentagoGTP::gtp_all_legal(vecstr args){
 	string ret;
-	for(Board::MoveIterator move = game.getboard().moveit(); !move.done(); ++move)
+	for(MoveIterator move(game.getboard()); !move.done(); ++move)
 		ret += move->to_s() + " ";
 	return GTPResponse(true, ret);
 }

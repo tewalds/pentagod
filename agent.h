@@ -38,7 +38,7 @@ protected:
 	static int solve1ply(const Board & board, int & nodes) {
 		int outcome = -3;
 		int turn = board.toplay();
-		for(Board::MoveIterator move = board.moveit(true); !move.done(); ++move){
+		for(MoveIterator move(board); !move.done(); ++move){
 			++nodes;
 			int won = board.test_win(*move, turn);
 
@@ -54,7 +54,7 @@ protected:
 		int losses = 0;
 		int outcome = -3;
 		int turn = board.toplay(), opponent = 3 - turn;
-		for(Board::MoveIterator move = board.moveit(true); !move.done(); ++move){
+		for(MoveIterator move(board); !move.done(); ++move){
 			++nodes;
 			int won = board.test_win(*move, turn);
 

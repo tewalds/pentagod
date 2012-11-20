@@ -9,10 +9,8 @@
 using namespace std;
 
 #include "move.h"
-#include "string.h"
 #include "hashset.h"
 #include "xorshift.h"
-#include "log.h"
 
 //#include <bitset>
 //#define bitcount(x) std::bitset<typeof(x)>(x).count()

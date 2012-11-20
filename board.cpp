@@ -1,5 +1,6 @@
 
 #include "board.h"
+#include "string.h"
 
 const int Board::xytobit[36] = {
 	 0,  1,  2, 15, 16,  9,

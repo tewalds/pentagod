@@ -2,6 +2,20 @@
 #include "pentagogtp.h"
 #include "moveiterator.h"
 
+GTPResponse PentagoGTP::gtp_mcts(vecstr args){
+	delete agent;
+	agent = new AgentMCTS();
+	agent->set_board(game.getboard());
+	return GTPResponse(true);
+}
+
+GTPResponse PentagoGTP::gtp_pns(vecstr args){
+	delete agent;
+	agent = new AgentPNS();
+	agent->set_board(game.getboard());
+	return GTPResponse(true);
+}
+
 GTPResponse PentagoGTP::gtp_echo(vecstr args){
 	return GTPResponse(true, implode(args, " "));
 }

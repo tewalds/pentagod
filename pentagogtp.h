@@ -8,6 +8,7 @@
 #include "move.h"
 #include "agent.h"
 #include "agentmcts.h"
+#include "agentpns.h"
 
 struct TimeControl {
 	enum Method { PERCENT, EVEN, STATS };
@@ -82,6 +83,9 @@ public:
 		newcallback("genmove",         bind(&PentagoGTP::gtp_genmove,       this, _1), "Generate a move: genmove [color] [time]");
 		newcallback("solve",           bind(&PentagoGTP::gtp_solve,         this, _1), "Try to solve this position");
 
+		newcallback("mcts",            bind(&PentagoGTP::gtp_mcts,          this, _1), "Switch to use the Monte Carlo Tree Search agent to play/solve");
+		newcallback("pns",             bind(&PentagoGTP::gtp_pns,           this, _1), "Switch to use the Proof Number Search agent to play/solve");
+
 		newcallback("all_legal",       bind(&PentagoGTP::gtp_all_legal,     this, _1), "List all legal moves");
 		newcallback("history",         bind(&PentagoGTP::gtp_history,       this, _1), "List of played moves");
 		newcallback("playgame",        bind(&PentagoGTP::gtp_playgame,      this, _1), "Play a list of moves");
@@ -148,6 +152,8 @@ public:
 	GTPResponse gtp_version(vecstr args);
 	GTPResponse gtp_verbose(vecstr args);
 	GTPResponse gtp_colorboard(vecstr args);
+	GTPResponse gtp_mcts(vecstr args);
+	GTPResponse gtp_pns(vecstr args);
 
 	GTPResponse gtp_time(vecstr args);
 	double get_time();

@@ -116,6 +116,7 @@ public:
 		uint64_t ws = sides[1];
 		uint64_t bs = sides[2];
 
+		//calculate score from white's perspective
 		for(int i = 0; i < 32; i++){
 			uint64_t wm = winmaps[i];
 			uint64_t w = (ws & wm);
@@ -124,7 +125,9 @@ public:
 			if     (w && !b) s += scoremap[bitcount(w)];
 			else if(!w && b) s -= scoremap[bitcount(b)];
 		}
-		return (to_play == 1 ? s : -s);
+		//return the score from the perspective of the player that just played
+		//ie not the player whose turn it is now
+		return (to_play == 1 ? -s : s);
 	}
 
 

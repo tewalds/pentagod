@@ -17,7 +17,7 @@ public:
 	Agent() : outcome(-3), maxdepth(0), nodes_seen(0), time_used(0) { }
 	virtual ~Agent() { }
 
-	virtual void genmove(double time, uint64_t maxruns, int verbose) = 0;
+	virtual void search(double time, uint64_t maxruns, int verbose) = 0;
 	virtual Move return_move(int verbose) const = 0;
 	virtual void set_board(const Board & board, bool clear = true) = 0;
 	virtual void move(const Move & m) = 0;

@@ -304,7 +304,7 @@ public:
 
 	void move(const Move & m);
 
-	void genmove(double time, uint64_t maxruns, int verbose);
+	void search(double time, uint64_t maxruns, int verbose);
 	Move return_move(int verbose) const { return return_move(& root, rootboard.toplay(), verbose); }
 
 	double gamelen() const;

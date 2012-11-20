@@ -105,9 +105,11 @@ GTPResponse PentagoGTP::gtp_solve(vecstr args){
 		logerr("time remain: " + to_str(time_remain, 1) + ", time: " + to_str(use_time, 3) + ", sims: " + to_str(time.max_sims) + "\n");
 
 	Time start;
-	agent->genmove(use_time, time.max_sims, verbose);
+	agent->search(use_time, time.max_sims, verbose);
 	time_used(Time() - start);
 
+
+	//TODO: find the outcome, not the best move...
 
 	Move best = agent->return_move(verbose);
 
@@ -128,7 +130,7 @@ GTPResponse PentagoGTP::gtp_genmove(vecstr args){
 		logerr("time:        remain: " + to_str(time_remain, 1) + ", use: " + to_str(use_time, 3) + ", sims: " + to_str(time.max_sims) + "\n");
 
 	Time start;
-	agent->genmove(use_time, time.max_sims, verbose);
+	agent->search(use_time, time.max_sims, verbose);
 	time_used(Time() - start);
 
 

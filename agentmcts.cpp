@@ -70,7 +70,7 @@ void AgentMCTS::MCTSThread::run(){
 	}
 }
 
-void AgentMCTS::genmove(double time, uint64_t max_runs, int verbose){
+void AgentMCTS::search(double time, uint64_t max_runs, int verbose){
 	time_used = 0;
 	int toplay = rootboard.toplay();
 

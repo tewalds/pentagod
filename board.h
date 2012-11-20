@@ -143,10 +143,13 @@ public:
 	}
 	int8_t won_calc() const {
 		int8_t wonside = 0;
+		uint64_t ws = sides[1];
+		uint64_t bs = sides[2];
 
 		for(int i = 0; i < 32; i++){
-			if(     (sides[1] & winmaps[i]) == winmaps[i]) wonside |= 1;
-			else if((sides[2] & winmaps[i]) == winmaps[i]) wonside |= 2;
+			uint64_t wm = winmaps[i];
+			if     ((ws & wm) == wm) wonside |= 1;
+			else if((bs & wm) == wm) wonside |= 2;
 		}
 
 		switch(wonside){
@@ -164,15 +167,18 @@ public:
 	}
 	int score_calc() const {
 		int s = 0;
+		uint64_t ws = sides[1];
+		uint64_t bs = sides[2];
 
 		for(int i = 0; i < 32; i++){
-			uint64_t w = (sides[1] & winmaps[i]);
-			uint64_t b = (sides[2] & winmaps[i]);
+			uint64_t wm = winmaps[i];
+			uint64_t w = (ws & wm);
+			uint64_t b = (bs & wm);
 
 			if     (w && !b) s += scoremap[bitcount(w)];
-			else if(b && !w) s -= scoremap[bitcount(b)];
+			else if(!w && b) s -= scoremap[bitcount(b)];
 		}
-		return (to_play == 0 ? s : -s);
+		return (to_play == 1 ? s : -s);
 	}
 
 

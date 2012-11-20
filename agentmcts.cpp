@@ -355,6 +355,9 @@ string AgentMCTS::move_stats(vector<Move> moves) const {
 }
 
 Move AgentMCTS::return_move(const Node * node, int toplay, int verbose) const {
+	if(node->outcome >= 0)
+		return node->bestmove;
+
 	double val, maxval = -1000000000000.0; //1 trillion
 
 	Node * ret = NULL,

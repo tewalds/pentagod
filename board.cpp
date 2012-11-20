@@ -84,7 +84,7 @@ string Board::to_s(bool color) const {
 }
 
 string Board::won_str() const {
-	switch(outcome){
+	switch(won()){
 		case -3: return "none";
 		case -2: return "black_or_draw";
 		case -1: return "white_or_draw";

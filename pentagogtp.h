@@ -80,6 +80,7 @@ public:
 		newcallback("undo",            bind(&PentagoGTP::gtp_undo,          this, _1), "Undo one or more moves: undo [amount to undo]");
 		newcallback("time",            bind(&PentagoGTP::gtp_time,          this, _1), "Set the time limits and the algorithm for per game time");
 		newcallback("genmove",         bind(&PentagoGTP::gtp_genmove,       this, _1), "Generate a move: genmove [color] [time]");
+		newcallback("solve",           bind(&PentagoGTP::gtp_solve,         this, _1), "Try to solve this position");
 
 		newcallback("all_legal",       bind(&PentagoGTP::gtp_all_legal,     this, _1), "List all legal moves");
 		newcallback("history",         bind(&PentagoGTP::gtp_history,       this, _1), "List of played moves");

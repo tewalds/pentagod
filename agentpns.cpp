@@ -189,9 +189,10 @@ bool AgentPNS::PNSThread::pns(const Board & board, Node * node, int depth, uint3
 		temp.alloc(numnodes, agent->ctmem);
 
 		unsigned int i = 0;
-		for(MoveIterator move(board, true); !move.done(); ++move){
-			int outcome = move.board().won();
-			int pd = 1;
+		unsigned int seen = 0;
+		for(MoveIterator move(board); !move.done(); ++move){
+			int outcome = solve1ply(move.board(), seen);
+			unsigned int pd = 1;
 			temp[i] = Node(*move).outcome(outcome, board.toplay(), agent->ties, pd);
 			i++;
 		}
@@ -200,7 +201,7 @@ bool AgentPNS::PNSThread::pns(const Board & board, Node * node, int depth, uint3
 		node->children.swap(temp);
 		assert(temp.unlock());
 
-		PLUS(agent->nodes_seen, i);
+		PLUS(agent->nodes_seen, seen);
 
 		updatePDnum(node);
 

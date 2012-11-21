@@ -123,8 +123,6 @@ public:
 	};
 
 	class PNSThread {
-	protected:
-	public:
 		Thread thread;
 		AgentPNS * agent;
 	public:
@@ -181,6 +179,7 @@ public:
 		numthreads = 1;
 		gclimit = 5;
 
+		nodes = 0;
 		reset();
 
 		set_memlimit(1000*1024*1024);

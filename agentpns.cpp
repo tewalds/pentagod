@@ -188,9 +188,9 @@ bool AgentPNS::PNSThread::pns(const Board & board, Node * node, int depth, uint3
 		CompactTree<Node>::Children temp;
 		temp.alloc(numnodes, agent->ctmem);
 
-		int i = 0;
+		unsigned int i = 0;
 		for(MoveIterator move(board, true); !move.done(); ++move){
-			int outcome = board.test_win(*move);
+			int outcome = move.board().won();
 			int pd = 1;
 			temp[i] = Node(*move).outcome(outcome, board.toplay(), agent->ties, pd);
 			i++;
@@ -371,11 +371,8 @@ void AgentPNS::garbage_collect(Node * node){
 	Node * end = node->children.end();
 
 	for( ; child != end; child++){
-		if(child->terminal()){ //solved
-			//log heavy nodes?
-			PLUS(nodes, -child->dealloc(ctmem));
-		}else if(child->work < gclimit){ //low work, ignore solvedness since it's trivial to re-solve
-			PLUS(nodes, -child->dealloc(ctmem));
+		if(child->terminal() || child->work < gclimit){ //solved or low work, ignore solvedness since it's trivial to re-solve
+			nodes -= child->dealloc(ctmem);
 		}else if(child->children.num() > 0){
 			garbage_collect(child);
 		}

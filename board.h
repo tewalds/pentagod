@@ -43,7 +43,8 @@ class Board{
 	mutable int cached_score;
 	static const int default_score = 0xDEADBEEF;
 public:
-	static const short unique_depth = 5; //update and test rotations/symmetry with less than this many pieces on the board
+	static const short unique_depth = 10;  //look for redundant moves up to this depth
+	static const short fullhash_depth = 5; //also consider rotations/mirrors of the board
 
 	Board(){
 		sides[0] = 0;
@@ -132,7 +133,7 @@ public:
 
 
 	uint64_t hash() const {
-		return (nummoves < unique_depth ? full_hash() : simple_hash());
+		return (nummoves < fullhash_depth ? full_hash() : simple_hash());
 	}
 
 	uint64_t test_hash(const Move & m) const {
@@ -160,7 +161,7 @@ public:
 			return true;
 		}
 
-		sides[to_play] |=xybits[m.l];
+		sides[to_play] |= xybits[m.l];
 
 		if (m.direction() == 0) {
 			sides[1] = rotate_quad_ccw(sides[1], m.quadrant());

@@ -41,6 +41,7 @@ class Board{
 	uint8_t to_play;
 	mutable int8_t outcome; //-3 = unknown, 0 = tie, 1,2 = player win
 	mutable int cached_score;
+	mutable uint64_t cached_hash;
 	static const int default_score = 0xDEADBEEF;
 public:
 	static const short unique_depth = 10;  //look for redundant moves up to this depth
@@ -54,6 +55,7 @@ public:
 		to_play = 1;
 		outcome = -4;
 		cached_score = default_score;
+		cached_hash = 0;
 	}
 
 	int num_moves() const { return nummoves; }
@@ -133,19 +135,9 @@ public:
 
 
 	uint64_t hash() const {
-		return (nummoves < fullhash_depth ? full_hash() : simple_hash());
-	}
-
-	uint64_t test_hash(const Move & m) const {
-		Board b = *this;
-		b.move(m);
-		return b.hash();
-	}
-
-	int test_win(const Move & m) const {
-		Board b = *this;
-		b.move(m);
-		return b.won_calc();
+		if(!cached_hash)
+			cached_hash = (nummoves < fullhash_depth ? full_hash() : simple_hash());
+		return cached_hash;
 	}
 
 	bool move(const Move & m){
@@ -176,6 +168,7 @@ public:
 		to_play = 3 - to_play;
 		outcome = -4;
 		cached_score = default_score;
+		cached_hash = 0;
 
 		return true;
 	}
@@ -210,6 +203,7 @@ public:
 		to_play = 3 - to_play;
 		outcome = -4;
 		cached_score = default_score;
+		cached_hash = 0;
 
 		return true;
 	}
@@ -241,6 +235,7 @@ public:
 
 		outcome = -4;
 		cached_score = default_score;
+		cached_hash = 0;
 
 		return true;
 	}

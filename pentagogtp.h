@@ -9,6 +9,7 @@
 #include "agent.h"
 #include "agentmcts.h"
 #include "agentpns.h"
+#include "agentab.h"
 
 struct TimeControl {
 	enum Method { PERCENT, EVEN, STATS };
@@ -85,6 +86,7 @@ public:
 
 		newcallback("mcts",            bind(&PentagoGTP::gtp_mcts,          this, _1), "Switch to use the Monte Carlo Tree Search agent to play/solve");
 		newcallback("pns",             bind(&PentagoGTP::gtp_pns,           this, _1), "Switch to use the Proof Number Search agent to play/solve");
+		newcallback("ab",              bind(&PentagoGTP::gtp_ab,            this, _1), "Switch to use the Alpha/Beta agent to play/solve");
 
 		newcallback("all_legal",       bind(&PentagoGTP::gtp_all_legal,     this, _1), "List all legal moves");
 		newcallback("history",         bind(&PentagoGTP::gtp_history,       this, _1), "List of played moves");
@@ -154,6 +156,7 @@ public:
 	GTPResponse gtp_colorboard(vecstr args);
 	GTPResponse gtp_mcts(vecstr args);
 	GTPResponse gtp_pns(vecstr args);
+	GTPResponse gtp_ab(vecstr args);
 
 	GTPResponse gtp_time(vecstr args);
 	double get_time();

@@ -15,6 +15,12 @@ GTPResponse PentagoGTP::gtp_pns(vecstr args){
 	agent->set_board(game.getboard());
 	return GTPResponse(true);
 }
+GTPResponse PentagoGTP::gtp_ab(vecstr args){
+	delete agent;
+	agent = new AgentAB();
+	agent->set_board(game.getboard());
+	return GTPResponse(true);
+}
 
 GTPResponse PentagoGTP::gtp_echo(vecstr args){
 	return GTPResponse(true, implode(args, " "));

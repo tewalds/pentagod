@@ -17,7 +17,7 @@ void AgentAB::search(double time, uint64_t maxiters, int verbose) {
 	Time start;
 
 	uint64_t nodes_start, seen, prev_nodes_seen = 0;
-	for(int depth = 2; !timeout && depth < maxiters; depth++){
+	for(unsigned int depth = 2; !timeout && depth < maxiters; depth++){
 		maxdepth = depth;
 		nodes_start = nodes_seen;
 		Time start_depth;

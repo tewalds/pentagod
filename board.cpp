@@ -11,21 +11,18 @@ const int Board::xytobit[36] = {
 	27, 34, 33, 20, 19, 18,
 };
 
-#define p2(x) ( 1ull << (x))
+#define p2(x) ( 1ull << Board::xytobit[x])
 const uint64_t Board::xybits[36] = {
-	p2(Board::xytobit[0]), p2(Board::xytobit[1]), p2(Board::xytobit[2]), p2(Board::xytobit[3]),
-	p2(Board::xytobit[4]), p2(Board::xytobit[5]), p2(Board::xytobit[6]), p2(Board::xytobit[7]),
-	p2(Board::xytobit[8]), p2(Board::xytobit[9]), p2(Board::xytobit[10]),p2(Board::xytobit[11]),
-	p2(Board::xytobit[12]),p2(Board::xytobit[13]),p2(Board::xytobit[14]),p2(Board::xytobit[15]),
-	p2(Board::xytobit[16]),p2(Board::xytobit[17]),p2(Board::xytobit[18]),p2(Board::xytobit[19]),
-	p2(Board::xytobit[20]),p2(Board::xytobit[21]),p2(Board::xytobit[22]),p2(Board::xytobit[23]),
-	p2(Board::xytobit[24]),p2(Board::xytobit[25]),p2(Board::xytobit[26]),p2(Board::xytobit[27]),
-	p2(Board::xytobit[28]),p2(Board::xytobit[29]),p2(Board::xytobit[30]),p2(Board::xytobit[31]),
-	p2(Board::xytobit[32]),p2(Board::xytobit[33]),p2(Board::xytobit[34]),p2(Board::xytobit[35])
+	p2( 0), p2( 1), p2( 3), p2( 3), p2( 4), p2( 5),
+	p2( 6), p2( 7), p2( 8), p2( 9), p2(10), p2(11),
+	p2(12), p2(13), p2(14), p2(15), p2(16), p2(17),
+	p2(18), p2(19), p2(20), p2(21), p2(22), p2(23),
+	p2(24), p2(25), p2(26), p2(27), p2(28), p2(29),
+	p2(30), p2(31), p2(32), p2(33), p2(34), p2(35),
 };
+#undef p2
 
 const int Board::scoremap[6] = { 0, 1, 3, 9, 27, 127 };
-
 
 
 string Board::to_s(bool color) const {

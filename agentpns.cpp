@@ -6,49 +6,18 @@
 #include "log.h"
 
 void AgentPNS::search(double time, uint64_t maxiters, int verbose){
-	if(rootboard.won() >= 0){
-		outcome = rootboard.won();
+	if(rootboard.won() >= 0)
 		return;
-	}
 
 	start_threads();
 
 	timeout = false;
 	Alarm timer(time, std::tr1::bind(&AgentPNS::timedout, this));
-	Time start;
-
-//	logerr("max memory: " + to_str(memlimit/(1024*1024)) + " Mb\n");
 
 	//wait for the timer to stop them
 	runbarrier.wait();
 	CAS(threadstate, Thread_Wait_End, Thread_Wait_Start);
 	assert(threadstate == Thread_Wait_Start);
-
-	if(root.phi == 0 && root.delta == LOSS){ //look for the winning move
-		for(Node * i = root.children.begin() ; i != root.children.end(); i++){
-			if(i->delta == 0){
-				bestmove = i->move;
-				break;
-			}
-		}
-		outcome = rootboard.toplay();
-	}else if(root.phi == 0 && root.delta == DRAW){ //look for the move to tie
-		for(Node * i = root.children.begin() ; i != root.children.end(); i++){
-			if(i->delta == DRAW){
-				bestmove = i->move;
-				break;
-			}
-		}
-		outcome = 0;
-	}else if(root.delta == 0){ //loss
-		bestmove = M_NONE;
-		outcome = 3 - rootboard.toplay();
-	}else{ //unknown
-		bestmove = M_UNKNOWN;
-		outcome = -3;
-	}
-
-	time_used = Time() - start;
 }
 
 void AgentPNS::PNSThread::run(){

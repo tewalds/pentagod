@@ -9,13 +9,7 @@
 
 class Agent {
 public:
-	int outcome; // 0,3 = tie, 1 = white, 2 = black, -1 = white or tie, -2 = black or tie, -3 = unknown
-	int maxdepth;
-	uint64_t nodes_seen;
-	double time_used;
-	Move bestmove;
-
-	Agent() : outcome(-3), maxdepth(0), nodes_seen(0), time_used(0) { }
+	Agent() { }
 	virtual ~Agent() { }
 
 	virtual void search(double time, uint64_t maxruns, int verbose) = 0;
@@ -37,7 +31,7 @@ protected:
 	Board rootboard;
 
 	static int solve1ply(const Board & board, unsigned int & nodes) {
-		int outcome = -3;
+		int outcome = -4;
 		int turn = board.toplay();
 		for(MoveIterator move(board); !move.done(); ++move){
 			++nodes;
@@ -45,8 +39,10 @@ protected:
 
 			if(won == turn)
 				return won;
-			if(won == 0)
+			else if(won == 0)
 				outcome = 0;
+			else if(outcome == 3 - turn || outcome == -4)
+				outcome = won;
 		}
 		return outcome;
 	}

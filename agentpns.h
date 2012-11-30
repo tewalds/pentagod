@@ -151,6 +151,9 @@ public:
 	unsigned int gclimit;
 	CompactTree<Node> ctmem;
 
+	int maxdepth;
+	uint64_t nodes_seen;
+
 	enum ThreadState {
 		Thread_Cancelled,  //threads should exit
 		Thread_Wait_Start, //threads are waiting to start
@@ -199,11 +202,8 @@ public:
 	}
 
 	void reset(){
-		outcome = -3;
 		maxdepth = 0;
 		nodes_seen = 0;
-		time_used = 0;
-		bestmove = Move(M_UNKNOWN);
 
 		timeout = false;
 	}

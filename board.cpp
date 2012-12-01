@@ -198,5 +198,5 @@ uint64_t * gen_lookup3to2(unsigned int inbits, unsigned int outbits){
 	}
 	return lookup;
 }
-const uint64_t * Board::lookup3to2 = gen_lookup3to2(6, 10);
+const uint64_t * Board::lookup3to2 = gen_lookup3to2(9, 15);
 

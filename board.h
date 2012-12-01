@@ -243,45 +243,38 @@ public:
 private:
 
 	uint64_t simple_hash() const {
-		//Take 6 bits at a time from each player, merge them, convert to base 2
+		//Take 9 bits at a time from each player, merge them, convert to base 2
 		//results in a 60 bit hash when only 48 bits are needed, but much more efficient to compute
 		uint64_t h = 0;
-		uint64_t w = sides[1] << 6;
+		uint64_t w = sides[1] << 9;
 		uint64_t b = sides[2];
-		h |= lookup3to2[((w & (0x3Full <<  6)) | (b & (0x3Full      )))      ];
-		h |= lookup3to2[((w & (0x3Full << 12)) | (b & (0x3Full <<  6))) >>  6] << 10;
-		h |= lookup3to2[((w & (0x3Full << 18)) | (b & (0x3Full << 12))) >> 12] << 20;
-		h |= lookup3to2[((w & (0x3Full << 24)) | (b & (0x3Full << 18))) >> 18] << 30;
-		h |= lookup3to2[((w & (0x3Full << 30)) | (b & (0x3Full << 24))) >> 24] << 40;
-		h |= lookup3to2[((w & (0x3Full << 36)) | (b & (0x3Full << 30))) >> 30] << 50;
+		h |= lookup3to2[((w & (0x1FFull <<  9)) | (b & (0x1FFull <<  0))) >>  0] <<  0;
+		h |= lookup3to2[((w & (0x1FFull << 18)) | (b & (0x1FFull <<  9))) >>  9] << 15;
+		h |= lookup3to2[((w & (0x1FFull << 27)) | (b & (0x1FFull << 18))) >> 18] << 30;
+		h |= lookup3to2[((w & (0x1FFull << 36)) | (b & (0x1FFull << 27))) >> 27] << 45;
 		return h;
 	}
 
 	uint64_t full_hash() const {
-		uint64_t h = ~0ull;
 		Board b(*this);
-	/*
-		int i = 0;
-		while(true){
-			uint64_t t = b.simple_hash();
-			if(h > t)
-				h = t;
-			if     (i == 3) b.flip_board();
-			else if(i != 7) b.rotate_board();
-			else            break;
-			i++;
-		}
-/*/
-		h =        b.simple_hash();  b.rotate_board();
-		h = min(h, b.simple_hash()); b.rotate_board();
-		h = min(h, b.simple_hash()); b.rotate_board();
-		h = min(h, b.simple_hash()); b.flip_board();
-		h = min(h, b.simple_hash()); b.rotate_board();
-		h = min(h, b.simple_hash()); b.rotate_board();
-		h = min(h, b.simple_hash()); b.rotate_board();
-		h = min(h, b.simple_hash());
-//*/
-		return h;
+
+		uint64_t m, h;
+		m =        (h = b.simple_hash());
+		m = min(m, (h = rotate_hash(h)));
+		m = min(m, (h = rotate_hash(h)));
+		m = min(m, (    rotate_hash(h)));
+
+		b.flip_board();
+		m = min(m, (h = b.simple_hash()));
+		m = min(m, (h = rotate_hash(h)));
+		m = min(m, (h = rotate_hash(h)));
+		m = min(m, (    rotate_hash(h)));
+
+		return m;
+	}
+
+	static uint64_t rotate_hash(uint64_t b){ // rotate one player
+		return ((b & 0xFFFFFFFFFFF8000ull) >> 15) | ((b & 0x7FFFull) << 45);
 	}
 
 	void rotate_board(){

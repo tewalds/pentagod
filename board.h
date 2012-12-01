@@ -33,7 +33,7 @@ class Board{
 	static const uint64_t xybits[36];       // xybits[i] = (1ull << xytobit[i])
 	static const uint64_t winmaps[32];      // the bit patterns for the 32 win conditions
 	static const uint64_t flipquad[512];    // lookup table to mirror a quadrant
-	static const uint64_t lookup3to2[4096]; // convert base 3 for one line of 6 to base 2, used in hashing
+	static const uint64_t * lookup3to2;     // convert base 3 for one line of 6 to base 2, used in hashing
 	static const int      scoremap[6];      // how many points a given line with how many pieces is worth
 
 	uint64_t sides[3]; // sides[0] = sides[1] | sides[2];

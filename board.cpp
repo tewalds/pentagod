@@ -174,11 +174,11 @@ const uint64_t Board::flipquad[512] = {
 //eg: gen_lookup3to2(2)
 //would fill 0000 -> 0, 0001 -> 1, 0100 -> 2, 0010 -> 3, 0011 -> 4, 0110 -> 5, 1000 -> 6, 1001 -> 7, 1100 -> 8,
 //and all others (ie 0101, 1010, 1011, 1110, 0111, 1101, 1111), would go to 0 as they're invalid in this scheme
-uint64_t * gen_lookup3to2(unsigned int inbits, unsigned int outbits){
-	uint64_t * lookup = new uint64_t[1 << (inbits*2)];
-	for(uint64_t i = 0; i < (1 << inbits);  i++){ //top bits
-		for(uint64_t j = 0; j < (1 << inbits); j++){ //bottom bits
-			uint64_t bi = i, bj = j, val = 0, exp = 1;
+uint16_t * gen_lookup3to2(unsigned int inbits, unsigned int outbits){
+	uint16_t * lookup = new uint16_t[1 << (inbits*2)];
+	for(uint16_t i = 0; i < (1 << inbits);  i++){ //top bits
+		for(uint16_t j = 0; j < (1 << inbits); j++){ //bottom bits
+			uint16_t bi = i, bj = j, val = 0, exp = 1;
 			while(bi || bj){
 				if((bi & 1) && (bj & 1)){ //not base 3 if both are set
 					val = 0;
@@ -198,5 +198,5 @@ uint64_t * gen_lookup3to2(unsigned int inbits, unsigned int outbits){
 	}
 	return lookup;
 }
-const uint64_t * Board::lookup3to2 = gen_lookup3to2(9, 15);
+const uint16_t * Board::lookup3to2 = gen_lookup3to2(9, 15);
 

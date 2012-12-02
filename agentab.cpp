@@ -68,33 +68,27 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 		return -board.score();
 	}
 
-	uint64_t h = 0;
-	Node node;
 	int16_t score = SCORE_LOSS;
 	Move bestmove = M_RESIGN;
+	Node * node;
 
-	if(TT){
-		h = board.hash();
-		Node node = *(tt(h));
-
-		if(node.hash == h) {
-			if(node.depth >= depth){
-				switch(node.flag){
-				case VALID:  return node.score;
-				case LBOUND: alpha = max(alpha, node.score); break;
-				case UBOUND: beta  = min(beta,  node.score); break;
-				default:     assert(false && "Unknown flag!");
-				}
-				if(alpha >= beta)
-					return node.score;
+	if(TT && (node = tt_get(board)) != NULL){
+		if(node->depth >= depth){
+			switch(node->flag){
+			case VALID:  return node->score;
+			case LBOUND: alpha = max(alpha, node->score); break;
+			case UBOUND: beta  = min(beta,  node->score); break;
+			default:     assert(false && "Unknown flag!");
 			}
-
-			//try the previous best move first
-			bestmove = node.bestmove;
-			Board n = board;
-			n.move(bestmove);
-			score = -negamax(n, -beta, -alpha, depth-1);
+			if(alpha >= beta)
+				return node->score;
 		}
+
+		//try the previous best move first
+		bestmove = node->bestmove;
+		Board n = board;
+		n.move(bestmove);
+		score = -negamax(n, -beta, -alpha, depth-1);
 	}
 
 	if (score < beta) { // no cutoff from bestmove
@@ -113,15 +107,10 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 		}
 	}
 
-	if (TT && node.depth <= depth) {
-		node.hash = h;
-		node.depth = depth;
-		node.score = score;
-		node.bestmove = bestmove;
-		if (     score <= alpha) { node.flag = UBOUND; }
-		else if (score >= beta)  { node.flag = LBOUND; }
-		else                     { node.flag = VALID;  }
-		*(tt(h)) = node;
+	if (TT) {
+		uint8_t flag = (score <= alpha ? UBOUND :
+		                score >= beta  ? LBOUND : VALID);
+		tt_set(Node(board.hash(), score, bestmove, depth, flag));
 	}
 	return score;
 }
@@ -134,9 +123,7 @@ string AgentAB::move_stats(vector<Move> moves) const {
 		b.move(*m);
 
 	for(MoveIterator move(b); !move.done(); ++move){
-		uint64_t h = move.board().hash();
-		const Node * n = tt(h);
-		if(n->hash == h) {
+		if(const Node * n = tt(move.board().hash())) {
 			s += n->to_s(*move) + "\n";
 		} else {
 			s += "move: " + move->to_s() + ", unknown\n";
@@ -146,17 +133,13 @@ string AgentAB::move_stats(vector<Move> moves) const {
 }
 
 Move AgentAB::return_move(const Board & board, int verbose) const {
-	uint64_t h = board.hash();
-	Node * n = tt(h);
-	if(n->hash == h)
+	if(const Node * n = tt(board.hash()))
 		return n->bestmove;
 
 	int score = SCORE_LOSS;
 	Move best = M_RESIGN;
 	for(MoveIterator move(board); !move.done(); ++move){
-		uint64_t h = move.board().hash();
-		const Node * n = tt(h);
-		if(n->hash == h) {
+		if(const Node * n = tt(move.board().hash())) {
 			if(score < n->score){
 				score = n->score;
 				best = *move;
@@ -198,3 +181,11 @@ AgentAB::Node * AgentAB::tt(uint64_t hash) const {
 	return & TT[hash % maxnodes];
 }
 
+AgentAB::Node * AgentAB::tt_get(const Board & b) const {
+	uint64_t h = b.hash();
+	Node * n = tt(h);
+	return (n->hash == h ? n : NULL);
+}
+void AgentAB::tt_set(const Node & n) {
+	*(tt(n.hash)) = n;
+}

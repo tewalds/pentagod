@@ -11,9 +11,9 @@ class AgentAB : public Agent {
 	static const int16_t SCORE_LOSS = -32767;
 	static const int16_t SCORE_DRAW = 0;
 
-	static const int8_t VALID  = 1;
-	static const int8_t LBOUND = 2;
-	static const int8_t UBOUND = 3;
+	static const uint8_t VALID  = 1;
+	static const uint8_t LBOUND = 2;
+	static const uint8_t UBOUND = 3;
 
 	struct Node {
 		uint64_t hash;     // hash value of this node according to board.hash()
@@ -24,10 +24,10 @@ class AgentAB : public Agent {
 		//int8_t   outcome;  // proven outcome from this node
 		int16_t  padding;
 
-		Node() : hash(~0ull), score(0), bestmove(M_UNKNOWN), depth(0), flag(0), padding(0xDEAD) //, outcome(-3)
-			{ }
-//		Node(uint64_t h = 0, int16_t s = 0, int8_t d = 0, int8_t o = -3, Move m = M_UNKNOWN, Move b = M_UNKNOWN) :
-//			hash(h), score(s), depth(d), outcome(o), move(m), bestmove(b) { }
+//		Node() : hash(~0ull), score(0), bestmove(M_UNKNOWN), depth(0), flag(0), padding(0xDEAD) //, outcome(-3)
+//			{ }
+		Node(uint64_t h = ~0ull, int16_t s = 0, Move b = M_UNKNOWN, int8_t d = 0, int8_t f = 0) : //. int8_t o = -3
+			hash(h), score(s), bestmove(b), depth(d), flag(f), padding(0xDEAD) { } //, outcome(o)
 
 		string to_s(Move move) const {
 			return "Node: move " + move.to_s() +
@@ -97,5 +97,7 @@ private:
 	Move return_move(const Board & board, int verbose = 0) const;
 
 	Node * tt(uint64_t hash) const ;
+	Node * tt_get(const Board & b) const ;
+	void tt_set(const Node & n) ;
 };
 

@@ -1,4 +1,4 @@
-time -m 3 -i 0
+time -m 0 -i 6
 ab
 genmove
 clear

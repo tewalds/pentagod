@@ -22,7 +22,7 @@ const uint64_t Board::xybits[36] = {
 };
 #undef p2
 
-const int Board::scoremap[6] = { 0, 1, 3, 9, 27, 127 };
+const int16_t Board::scoremap[6] = { 0, 1, 3, 9, 27, 127 };
 
 
 string Board::to_s(bool color) const {

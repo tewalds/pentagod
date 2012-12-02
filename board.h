@@ -34,15 +34,15 @@ class Board{
 	static const uint64_t winmaps[32];      // the bit patterns for the 32 win conditions
 	static const uint64_t flipquad[512];    // lookup table to mirror a quadrant
 	static const uint16_t * lookup3to2;     // convert base 3 for one line of 6 to base 2, used in hashing
-	static const int      scoremap[6];      // how many points a given line with how many pieces is worth
+	static const  int16_t scoremap[6];      // how many points a given line with how many pieces is worth
 
-	uint64_t sides[3]; // sides[0] = sides[1] | sides[2];
-	uint8_t nummoves;
-	uint8_t to_play;
+	uint64_t sides[3]; // sides[0] = sides[1] | sides[2]; bitmap of position for each side
+	uint8_t nummoves;  // how many moves have been made so far
+	uint8_t to_play;   // who's turn is it next, 1|2
 	mutable int8_t outcome; //-3 = unknown, 0 = tie, 1,2 = player win
-	mutable int cached_score;
+	mutable int16_t cached_score;
 	mutable uint64_t cached_hash;
-	static const int default_score = 0xDEADBEEF;
+	static const int16_t default_score = 0xDEAD;
 public:
 	static const short unique_depth = 10;  //look for redundant moves up to this depth
 	static const short fullhash_depth = 5; //also consider rotations/mirrors of the board
@@ -109,13 +109,13 @@ public:
 		}
 	}
 
-	int score() const {
+	int16_t score() const {
 		if(cached_score == default_score)
 			cached_score = score_calc();
 		return cached_score;
 	}
-	int score_calc() const {
-		int s = 0;
+	int16_t score_calc() const {
+		int16_t s = 0;
 		uint64_t ws = sides[1];
 		uint64_t bs = sides[2];
 

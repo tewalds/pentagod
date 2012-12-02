@@ -12,12 +12,14 @@ void AgentAB::search(double time, uint64_t maxiters, int verbose) {
 	if(TT == NULL)
 		TT = new Node[maxnodes];
 
-	Alarm timer(time/15, std::tr1::bind(&AgentAB::timedout, this));
+	Alarm timer;
+	if (time > 0)
+		timer(time/15, std::tr1::bind(&AgentAB::timedout, this));
 
 	Time start;
 
 	uint64_t nodes_start, seen, prev_nodes_seen = 0;
-	for(unsigned int depth = 2; !timeout && depth < 36 && (maxiters == 0 || depth < maxiters); depth++){
+	for(unsigned int depth = 2; !timeout && depth < 36 && (maxiters == 0 || depth <= maxiters); depth++){
 		maxdepth = depth;
 		nodes_start = nodes_seen;
 		Time start_depth;

@@ -3,6 +3,7 @@
 #include "time.h"
 #include "alarm.h"
 #include "log.h"
+#include "sort.h"
 
 void AgentAB::search(double time, uint64_t maxiters, int verbose) {
 	reset();
@@ -51,6 +52,18 @@ void AgentAB::search(double time, uint64_t maxiters, int verbose) {
 	}
 }
 
+struct SortNode {
+	Board board;
+	Move  move;
+	uint16_t score;
+
+	SortNode() {}
+	SortNode(const Board & b, const Move & m, uint16_t s) : board(b), move(m), score(s) { }
+	bool operator <  (const SortNode & o) const { return score <  o.score; }
+	bool operator <= (const SortNode & o) const { return score <= o.score; }
+	bool operator >  (const SortNode & o) const { return score >  o.score; }
+	bool operator >= (const SortNode & o) const { return score >= o.score; }
+};
 
 int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int depth) {
 	nodes_seen++;
@@ -94,14 +107,52 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 	if (score < beta) { // no cutoff from bestmove
 		//TODO: sort moves first?
 
-		//generate moves
-		for (MoveIterator move(board); !move.done(); ++move) {
-			int16_t value = -negamax(move.board(), -beta, -max(alpha, score), depth-1);
-			if (score < value) {
-				score = value;
-				bestmove = *move;
-				if (score >= beta){
-					break;
+		if(depth == 1){
+			//no need to generate and then sort the moves before hand, as we're just going to call score anyway
+			for (MoveIterator move(board); !move.done(); ++move) {
+				int16_t value = -negamax(move.board(), -beta, -max(alpha, score), depth-1);
+				if (score < value) {
+					score = value;
+					bestmove = *move;
+					if (score >= beta){
+						break;
+					}
+				}
+			}
+		} else {
+			SortNode nodes[board.moves_avail()];
+			SortNode * end = nodes;
+
+			for (MoveIterator move(board); !move.done(); ++move) {
+				int16_t s;
+//				if(TT && (node = tt_get(move.board())) != NULL)
+//					s = node->score; // need more conditions? flag? depth?
+//				else
+					s = move.board().score();
+//				s = 0; //for shuffle
+
+				*end = SortNode(move.board(), *move, s);
+				++end;
+			}
+
+			//sort(nodes, end, greater<SortNode>());
+			//insertion_sort(nodes, end);
+			shell_sort(nodes, end);
+			//random_shuffle(nodes, end);
+
+			//double check ordering, just for debugging
+			//for(SortNode * n = nodes + 1; n < end; ++n)
+			//	assert((n-1)->score >= n->score);
+
+			//generate moves
+			for (SortNode * n = nodes; n < end; ++n){
+				int16_t value = -negamax(n->board, -beta, -max(alpha, score), depth-1);
+				if (score < value) {
+					score = value;
+					bestmove = n->move;
+					if (score >= beta){
+						break;
+					}
 				}
 			}
 		}

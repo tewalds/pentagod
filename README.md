@@ -1,6 +1,6 @@
 Pentagod
 ========
-A pentago AI that implements several algorithms including [negamax](http://en.wikipedia.org/wiki/Negamax), [Negascout](http://en.wikipedia.org/wiki/Negascout), simple [Monte Carlo](http://en.wikipedia.org/wiki/Monte_Carlo_method) and [UCT](http://senseis.xmp.net/?UCT). As far as I know, the negamax version is the strongest pentago player in existence right now.
+A pentago AI that implements several algorithms including [negamax](http://en.wikipedia.org/wiki/Negamax), PNS and [UCT](http://senseis.xmp.net/?UCT). As far as I know, the negamax version is the strongest pentago player in existence right now.
 
 Features
 --------
@@ -9,18 +9,16 @@ Features
 * Already includes several players and scoring functions
 * Very fast - evaluates millions of positions per second per cpu
 * Very strong player, likely the strongest in the world
-* Tournament mode
 * HTTP mode integrates very well with the [Pentagoo](http://code.google.com/p/pentagoo/) front end
 
 Requirements
 ------------
 * Linux
 * C++ tool chain
-* libevent and libevent-dev
 
 Usage
 -----
-* Check out the code from google code
+* Check out the code from github
 * Make sure you have libevent installed
 * Tournament mode:
 	* change pentago.cpp to have the players you want

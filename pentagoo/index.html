@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Pentagoo</title>
+<link rel="icon" type="image/ico" href="favicon.ico" />
+<link rel="stylesheet" type="text/css" href="styles/pentagoo.css" />
+<script type="text/javascript" src="scripts/mootools-1.2-core.js"></script>
+<script type="text/javascript" src="scripts/mootools-1.2-more.js"></script>
+<script type="text/javascript" src="scripts/pentagoo.js"></script>
+<script type="text/javascript">
+window.addEvent('domready', function(){
+	var pentagoo = new Pentagoo();
+});
+</script>
+
+</head>
+<body>
+
+<div id="container">
+
+<div id="sidebar">
+
+<h1 title="The popular Pentago game, written in Javascript.">Pentagoo</h1>
+
+<div id="menu">
+	<a id="new-game-link">New Game</a>
+	<a id="undo-link">Undo</a>
+	<a id="history-link">History</a>
+	<a id="rules-link">Rules</a>
+	<a id="about-link">About</a>
+</div>
+
+</div>
+
+<div id="new-game" class="panel">
+<div>
+	<h2>Players Setup</h2>
+	<ul class="players-setup">
+	<li>
+	<h3><img src="images/tiny-white-piece.png" width="12" height="12" alt="(White)" /> Player 1 (starts first)</h3>
+	<p>
+	<label for="p1-h-l"><input type="radio" name="p1-box" checked="checked" id="p1-h-l" /> Human</label>
+	<label for="p1-c-l"><input type="radio" name="p1-box" id="p1-c-l" /> Computer</label>
+	<select id="p1-cl" disabled="disabled">
+	<option>Level 1</option>
+	<option>Level 2</option>
+	<option>Level 3</option>
+	<option>Level 4</option>
+	<option>Level 5</option>
+	</select>
+	</p>
+	</li>
+	<li>
+	<h3><img src="images/tiny-black-piece.png" width="12" height="12" alt="(Black)" /> Player 2</h3>
+	<p>
+	<label for="p2-h-l"><input type="radio" name="p2-box" checked="checked" id="p2-h-l" /> Human</label>
+	<label for="p2-c-l"><input type="radio" name="p2-box" id="p2-c-l" /> Computer</label>
+	<select id="p2-cl" disabled="disabled">
+	<option>Level 1</option>
+	<option>Level 2</option>
+	<option>Level 3</option>
+	<option>Level 4</option>
+	<option>Level 5</option>
+	</select>
+	</p>
+	</li>
+	</ul>
+	<span id="network-error"></span>
+	<p><strong>Notes</strong>:</p>
+	<ol>
+	<li><em>Undo</em> doesn't work when <em>Computer</em> is selected.</li>
+	<li>As for now, the Computer AI is <strong>not that good yet</strong>.</li>
+	</ol>
+	<p class="panel-button">
+	<button id="start-game-link"><strong>Start Game</strong></button>
+	<button id="cancel-game-link">Cancel</button>
+	</p>
+</div>
+</div>
+
+<div id="history" class="panel">
+<div>
+	<span id="history-bar"><span id="history-pointer"></span></span>
+	<p class="panel-button history-buttons">
+	<button id="history-start-link">Start</button>
+	<button id="history-back-link">Back</button>
+	<button id="history-forward-link">Forward</button>
+	<button id="history-end-link">End</button>
+	<button id="close-history-link">Close</button>
+	</p>
+</div>
+</div>
+
+<div id="rules" class="panel">
+<div>
+	<h2>Rules</h2>
+	<blockquote cite="http://en.wikipedia.org/wiki/Pentago">
+	<p>Pentago is a two-player abstract strategy game invented by the <a href="http://www.mindtwisterusa.com/" title="Mindtwister">Swedish company Mindtwister</a>.</p>
+	<p>The game is played on a 6x6 board divided into four 3x3 sub-boards (or quadrants). Taking turns, the two players place a marble of their colour (either black or white) onto an unoccupied space on the board, and then rotate one of the sub-boards by 90 degrees either clockwise or counter-clockwise. A player wins by getting five of their marbles in a vertical, horizontal or diagonal row (either before or after the sub-board rotation in their move). If all 36 spaces on the board are occupied without a row of five being formed then the game is a draw.</p>
+	<p>Retrieved from &quot;<a href="http://en.wikipedia.org/wiki/Pentago" title="Pentago">http://en.wikipedia.org/wiki/Pentago</a>&quot;</p>
+	</blockquote>
+	<p>In short, just place a marble and rotate a sub-board. Form a five-in-a-row and win!</p>
+	<p class="panel-button">
+	<button id="close-rules-link">Close</button>
+	</p>
+</div>
+</div>
+
+<div id="about" class="panel">
+<div>
+	<h2>About</h2>
+	<p><strong><a href="http://pentagoo.googlecode.com/" title="Pentagoo">Pentagoo</a></strong> is a pentago interface written in javascript by <a href="mailto:cheeaun+pentagoo@gmail.com">Lim Chee Aun</a>.
+	The features include:
+	<ul>
+		<li>Made with <a href="http://mootools.net/">Mootools</a> framework</li>
+		<li>Sub-board rotation animation</li>
+		<li>Keyboard control support</li>
+		<li>Undo and history logging</li>
+		<li>Tested in many browsers</li>
+	</ul></p>
+	<p><strong><a href="http://github.com/tewalds/pentagod/" title="Pentagod">Pentagod</a></strong> is a pentago AI written by <a href="mailto:timo@ewalds.ca">Timo Ewalds</a>.
+	The features include:
+	<ul>
+		<li>MCTS, PNS and NegaMax based players.</li>
+		<li>Includes a modified version of Pentagoo, and a webserver to tie the two together.</li>
+	</ul></p>
+	<p class="panel-button">
+	<button id="close-about-link">Close</button>
+	</p>
+</div>
+</div>
+
+<div id="status"></div>
+
+<div id="board-cover"></div>
+
+<table id="pentagoo-board">
+<tr>
+	<td id="sb-c-1" class="subboard-container">
+		<div>
+		<p class="rotation-buttons">
+		<a id="rb-00" class="rotate-left" title="Rotate Left">Rotate Left</a>
+		<a id="rb-01" class="rotate-right" title="Rotate Right">Rotate Right</a>
+		</p>
+		<table class="subboard" id="sb-1">
+		<tr>
+		<td id="s-00"><span></span></td>
+		<td id="s-01"><span></span></td>
+		<td id="s-02"><span></span></td>
+		</tr>
+		<tr>
+		<td id="s-10"><span></span></td>
+		<td id="s-11"><span></span></td>
+		<td id="s-12"><span></span></td>
+		</tr>
+		<tr>
+		<td id="s-20"><span></span></td>
+		<td id="s-21"><span></span></td>
+		<td id="s-22"><span></span></td>
+		</tr>
+		</table>
+		</div>
+	</td>
+	<td id="sb-c-2" class="subboard-container">
+		<div>
+		<p class="rotation-buttons">
+		<a id="rb-02" class="rotate-left" title="Rotate Left">Rotate Left</a>
+		<a id="rb-03" class="rotate-right" title="Rotate Right">Rotate Right</a>
+		</p>
+		<table class="subboard" id="sb-2">
+		<tr>
+		<td id="s-03"><span></span></td>
+		<td id="s-04"><span></span></td>
+		<td id="s-05"><span></span></td>
+		</tr>
+		<tr>
+		<td id="s-13"><span></span></td>
+		<td id="s-14"><span></span></td>
+		<td id="s-15"><span></span></td>
+		</tr>
+		<tr>
+		<td id="s-23"><span></span></td>
+		<td id="s-24"><span></span></td>
+		<td id="s-25"><span></span></td>
+		</tr>
+		</table>
+		</div>
+	</td>
+</tr>
+<tr>
+	<td id="sb-c-3" class="subboard-container">
+		<div>
+		<table class="subboard" id="sb-3">
+		<tr>
+		<td id="s-30"><span></span></td>
+		<td id="s-31"><span></span></td>
+		<td id="s-32"><span></span></td>
+		</tr>
+		<tr>
+		<td id="s-40"><span></span></td>
+		<td id="s-41"><span></span></td>
+		<td id="s-42"><span></span></td>
+		</tr>
+		<tr>
+		<td id="s-50"><span></span></td>
+		<td id="s-51"><span></span></td>
+		<td id="s-52"><span></span></td>
+		</tr>
+		</table>
+		<p class="rotation-buttons">
+		<a id="rb-10" class="rotate-left" title="Rotate Left">Rotate Left</a>
+		<a id="rb-11" class="rotate-right" title="Rotate Right">Rotate Right</a>
+		</p>
+		</div>
+	</td>
+	<td id="sb-c-4" class="subboard-container">
+		<div>
+		<table class="subboard" id="sb-4">
+		<tr>
+		<td id="s-33"><span></span></td>
+		<td id="s-34"><span></span></td>
+		<td id="s-35"><span></span></td>
+		</tr>
+		<tr>
+		<td id="s-43"><span></span></td>
+		<td id="s-44"><span></span></td>
+		<td id="s-45"><span></span></td>
+		</tr>
+		<tr>
+		<td id="s-53"><span></span></td>
+		<td id="s-54"><span></span></td>
+		<td id="s-55"><span></span></td>
+		</tr>
+		</table>
+		<p class="rotation-buttons">
+		<a id="rb-12" class="rotate-left" title="Rotate Left">Rotate Left</a>
+		<a id="rb-13" class="rotate-right" title="Rotate Right">Rotate Right</a>
+		</p>
+		</div>
+	</td>
+</tr>
+</table>
+
+<ul id="player-labels">
+<li id="player-1-label">
+	<img src="images/tiny-white-piece.png" width="12" height="12" alt="(White)" /> Player 1
+	<span id="player-1-type">Human</span>
+</li>
+<li id="player-2-label">
+	<img src="images/tiny-black-piece.png" width="12" height="12" alt="(Black)" /> Player 2
+	<span id="player-2-type">Human</span>
+</li>
+</ul>
+
+</div>
+
+</body>
+</html>
+

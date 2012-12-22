@@ -1,0 +1,465 @@
+/*
+ * Stylesheet: pentagoo.css - main styles for the Pentagoo UI
+ * Author: Lim Chee Aun
+ */
+
+body{
+text-align: center;
+font-size: .7em;
+font-family: "century gothic", arial, sans-serif;
+color: inherit;
+background: #85bcf3 url(/images/stripes-bg.png) top center;
+padding: 0;
+margin: 0;
+cursor: default;
+}
+
+input,button,select{
+font-size: 100%;
+font-family: "century gothic", arial, sans-serif;
+}
+
+a{
+color: #5e99e8;
+background-color: transparent;
+text-decoration: underline;
+cursor: pointer;
+}
+
+a:hover{
+text-decoration: none;
+}
+
+a img, img{
+border: 0;
+vertical-align: middle;
+padding-bottom: 2px;
+}
+
+table{
+border-collapse: collapse;
+}
+
+/* CONTAINER */
+
+#container{
+width: 620px;
+height: 520px;
+margin: 3% auto;
+color: inherit;
+background-color: #fff;
+position: relative;
+border: 3px solid #dceefe;
+}
+
+/* HEADER */
+
+#sidebar{
+position: absolute;
+left: 0;
+width: 100px;
+height: 520px;
+color: #fff;
+background: #488CE8 url(/images/stripes-header.png);
+}
+
+#sidebar h1{
+color: #fff;
+background: transparent url(/images/pentagoo-logo.png) no-repeat 90% 0;
+text-indent: -999em;
+height: 135px;
+margin: 10px 0;
+}
+
+/* MENU */
+
+#menu{
+padding: .2em 0;
+text-align: left;
+}
+
+#menu a{
+display: block;
+color: #fff;
+background-color: #5E99E8;
+padding: .2em .8em;
+cursor: pointer;
+border-bottom: 1px solid #83AFE9;
+text-decoration: none;
+}
+
+#menu a:hover{
+color: #fff;
+background-color: #488CE8;
+}
+
+#menu a.focus{
+color: #5E99E8;
+background-color: #fff;
+}
+
+#menu .disabled,
+#menu .disabled:hover{
+cursor: default;
+color: #A4C6F4;
+background-color: transparent;
+text-decoration: none;
+}
+
+/* PANEL */
+
+.panel{
+position: absolute;
+left: 100px;
+z-index: 300;
+overflow: hidden;
+text-align: left;
+width: 0;
+}
+
+.panel div{
+width: 500px;
+max-height: 514px;
+padding: 1px 10px 5px;
+border-bottom: 3px solid #dceefe;
+color: #000;
+background-color: #fff;
+overflow: auto;
+}
+
+.panel h2{
+margin: 0;
+padding: 10px 10px 6px;
+font-weight: normal;
+font-size: 1.3em;
+}
+.panel blockquote,
+.section{
+margin: 0 0 1em;
+padding: 10px 10px 0;
+color: #000;
+background-color: #fff;
+border: 1px solid #ddd;
+}
+.panel p{
+margin: 0;
+padding: 0 10px 10px;
+line-height: 1.5em;
+}
+.panel blockquote p,
+.section p{
+padding: 0 0 10px;
+}
+
+.panel ol{
+margin: 0 2em 1em;
+padding: 0;
+}
+.panel ul{
+margin: 0em .5em .8em 2.5em;
+padding: 0;
+}
+
+p.panel-button{
+position: relative;
+text-align: right;
+margin: .2em 0 0;
+padding: .6em;
+border-top: 1px solid #eee;
+}
+
+/* PLAYER SETUP PANEL */
+
+.panel ul.players-setup{
+margin: 0;
+padding: 0;
+list-style: none;
+}
+
+.players-setup li{
+clear: left;
+padding: 10px 10px 0;
+margin: 0 0 10px;
+color: #000;
+background-color: #fff;
+border: 1px solid #ddd;
+}
+
+.players-setup li h3{
+margin: 0;
+padding: 0;
+float: left;
+width: 200px;
+font-size: 1.2em;
+}
+
+.players-setup li label{
+padding: .5em;
+}
+
+/* BOARD */
+
+#board-cover,
+#pentagoo-board{
+position: absolute;
+width: 520px;
+height: 520px;
+left: 100px;
+}
+
+.subboard-container{
+line-height: 2em;
+padding: 0;
+}
+
+.subboard-container div{
+width: 260px;
+height: 260px;
+position: relative;
+color: inherit;
+background: #fff url(/images/pentago-subboard-90deg.png) no-repeat;
+}
+#sb-c-1 div{
+background-position: bottom right;
+}
+#sb-c-2 div{
+background-position: bottom left;
+}
+#sb-c-3 div{
+background-position: top right;
+}
+
+.subboard-container .subboard-1{
+background-image: url(/images/pentago-subboard-15deg.png);
+}
+.subboard-container .subboard-2{
+background-image: url(/images/pentago-subboard-30deg.png);
+}
+.subboard-container .subboard-3{
+background-image: url(/images/pentago-subboard-45deg.png);
+}
+.subboard-container .subboard-4{
+background-image: url(/images/pentago-subboard-60deg.png);
+}
+.subboard-container .subboard-5{
+background-image: url(/images/pentago-subboard-75deg.png);
+}
+
+.subboard-container table,
+.subboard-container .rotation-buttons{
+width: 180px;
+height: 180px;
+position: absolute;
+line-height: 0px;
+margin: 0;
+padding: 0;
+border: 0;
+}
+
+.subboard-container table{
+z-index: 20;
+}
+
+#sb-1,
+#sb-c-1 .rotation-buttons{
+bottom: 5px;
+right: 5px;
+}
+#sb-2,
+#sb-c-2 .rotation-buttons{
+bottom: 5px;
+left: 5px;
+}
+#sb-3,
+#sb-c-3 .rotation-buttons{
+top: 5px;
+right: 5px;
+}
+#sb-4,
+#sb-c-4 .rotation-buttons{
+top: 5px;
+left: 5px;
+}
+
+.subboard-container table td,
+.subboard-container table td span{
+width: 60px;
+height: 60px;
+padding: 0;
+margin: 0;
+color: inherit;
+background-color: transparent;
+background-position: center;
+background-repeat: no-repeat;
+}
+
+.subboard-container table td span{
+display: block;
+}
+
+.subboard-container table td.last,
+.subboard-container table td.win{
+background-image: url(/images/highlight-marble.png);
+}
+
+.subboard-container table td.p1 span,
+.subboard-container table td.p1 span.p1{
+background-image: url(/images/white-marble.png);
+}
+
+.subboard-container table td.p2 span,
+.subboard-container table td.p2 span.p2{
+background-image: url(/images/black-marble.png);
+}
+
+.subboard-container table td.space.highlight{
+background-image: url(/images/space-select.png);
+cursor: pointer;
+}
+.subboard-container table td.highlight{
+background-image: url(/images/marble-select.png);
+}
+
+/* ROTATION BUTTONS */
+
+.subboard-container .rotation-buttons{
+z-index: 30;
+background-image: url(/images/dummy.png); /* fix IE bug with opaque elements */
+}
+
+.rotation-buttons a{
+position: absolute;
+width: 50px;
+height: 50px;
+color: inherit;
+background: transparent url(/images/rotate-arrows.png) no-repeat;
+text-indent: -999em;
+z-index: 30;
+overflow: auto;
+cursor: pointer;
+}
+
+.rotation-buttons .rotate-left{
+left: 30px;
+bottom: 30px;
+}
+.rotation-buttons .rotate-left.highlight{
+background-position: bottom left;
+}
+
+.rotation-buttons .rotate-right{
+background-position: top right;
+right: 30px;
+top: 30px;
+}
+.rotation-buttons .rotate-right.highlight{
+background-position: bottom right;
+}
+
+/* PLAYER LABELS */
+
+#player-labels{
+margin: 0 0;
+padding: 0;
+}
+
+#player-labels li{
+position: absolute;
+bottom: 0;
+left: 100px;
+z-index: 100;
+width: 200px;
+margin-left: 30px;
+padding: 5px 0;
+list-style: none;
+color: #999;
+background-color: transparent;
+}
+
+#player-labels li.current{
+color: #333;
+background: transparent url(/images/player-busy.gif) repeat-x bottom center;
+font-weight: bold;
+font-size: 1.1em;
+}
+
+#player-labels #player-2-label{
+left: 360px;
+}
+
+#player-1-type,
+#player-2-type{
+color: #aaa;
+background-color: transparent;
+font-weight: normal;
+border-left: 1px solid #ddd;
+padding-left: .5em;
+margin-left: .5em;
+line-height: 1em;
+}
+
+/* STATUS */
+
+#status{
+position: absolute;
+left: 100px;
+font-weight: bold;
+color: #000;
+background-color: #FFFFCB;
+border-bottom: 1px solid #FFFF73;
+z-index: 200;
+width: 520px;
+padding: 5px 0;
+text-align: center;
+}
+
+/* HISTORY STUFF */
+
+#history-bar{
+display: block;
+color: inherit;
+background: #85bcf3 url(/images/stripes-bg.png);
+height: 7px;
+margin: 8px 0 10px;
+border-bottom: 1px solid #A0C6F4;
+position: relative;
+}
+
+#history-pointer{
+position: absolute;
+left: 100%;
+top: 2px;
+display: block;
+height: 4px;
+width: 7px;
+color: inherit;
+background: transparent url(/images/pointer.png) no-repeat;
+margin-left: -3px;
+}
+
+/* ONDOMREADY */
+
+.rotation-buttons{
+	visibility: hidden;
+}
+
+/* DEBUG */
+
+#debug{
+position: absolute;
+bottom: 0;
+left: 0;
+z-index: 99999;
+background-color: red;
+color: #fff;
+padding: 1em;
+}
+
+/* DIGG */
+
+#digg-button{
+position: absolute;
+top: 6%;
+left: 50%;
+margin-left: 330px;
+}

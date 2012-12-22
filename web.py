@@ -23,9 +23,12 @@ ymap = {'0':'a', '1':'b', '2':'c', '3':'d', '4':'e', '5':'f'}
 xmap = {'0':'1', '1':'2', '2':'3', '3':'4', '4':'5', '5':'6'}
 rmap = {'1r':'t', '1l':'s', '2r':'v', '2l':'u', '3r':'z', '3l':'y', '4r':'x', '4l':'w'}
 #and their inverse to convert back
-inv_ymap = {v:k for k,v in ymap.iteritems()}
-inv_xmap = {v:k for k,v in xmap.iteritems()}
-inv_rmap = {v:k for k,v in rmap.iteritems()}
+inv_ymap = {}
+for k,v in ymap.iteritems(): inv_ymap[v] = k
+inv_xmap = {}
+for k,v in xmap.iteritems(): inv_xmap[v] = k
+inv_rmap = {}
+for k,v in rmap.iteritems(): inv_rmap[v] = k
 
 
 class PentagoHandler(BaseHTTPRequestHandler):
@@ -33,7 +36,8 @@ class PentagoHandler(BaseHTTPRequestHandler):
 	def do_GET(self):
 		if '?' in self.path:
 			uri, qs = self.path.split('?', 1)
-			params = {k: urllib.unquote(v) for k,v in urlparse.parse_qsl(qs, True) }
+			params = {}
+			for k,v in urlparse.parse_qsl(qs, True): params[k] = urllib.unquote(v)
 		else:
 			uri, params = self.path, {}
 

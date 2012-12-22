@@ -56,7 +56,7 @@ class PentagoHandler(BaseHTTPRequestHandler):
 			gtp = GTPClient("./pentagod")
 			if 'p' in params and params['p'] in ['mcts','pns','ab']:
 				gtp.cmd(params['p'])
-			if 't' in params and 0 < int(params['t']) <= 60:
+			if 't' in params and 0 < float(params['t']) <= 60:
 				gtp.time(0, params['t'])
 			gtp.cmd("playgame" + game)
 			gtp.cmd("print")

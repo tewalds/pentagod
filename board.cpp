@@ -13,7 +13,7 @@ const int Board::xytobit[36] = {
 
 #define p2(x) ( 1ull << Board::xytobit[x])
 const uint64_t Board::xybits[36] = {
-	p2( 0), p2( 1), p2( 3), p2( 3), p2( 4), p2( 5),
+	p2( 0), p2( 1), p2( 2), p2( 3), p2( 4), p2( 5),
 	p2( 6), p2( 7), p2( 8), p2( 9), p2(10), p2(11),
 	p2(12), p2(13), p2(14), p2(15), p2(16), p2(17),
 	p2(18), p2(19), p2(20), p2(21), p2(22), p2(23),

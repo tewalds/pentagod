@@ -58,6 +58,9 @@ public:
 		cached_hash = 0;
 	}
 
+	//take a position as 01012200 ... of length 36, left to right, top to bottom, all [012]
+	Board(string str);
+
 	int num_moves() const { return nummoves; }
 	int moves_remain() const { return (won() >= 0 ? 0 : 36 - nummoves); }
 	int moves_avail() const { return moves_remain()*8; } //upper bound
@@ -74,6 +77,7 @@ public:
 	}
 
 	string to_s(bool color = true) const ;
+	string state() const ;
 
 	void print(bool color = true) const {
 		printf("%s", to_s(color).c_str());

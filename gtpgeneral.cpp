@@ -26,6 +26,10 @@ GTPResponse PentagoGTP::gtp_echo(vecstr args){
 	return GTPResponse(true, implode(args, " "));
 }
 
+GTPResponse PentagoGTP::gtp_state(vecstr args){
+	return GTPResponse(true, game.getboard().state());
+}
+
 GTPResponse PentagoGTP::gtp_print(vecstr args){
 	Board board = game.getboard();
 	for(unsigned int i = 0; i < args.size() && board.move(args[i]); i++)

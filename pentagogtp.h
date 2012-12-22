@@ -72,6 +72,7 @@ public:
 		newcallback("colorboard",      bind(&PentagoGTP::gtp_colorboard,    this, _1), "Turn on or off the colored board");
 		newcallback("showboard",       bind(&PentagoGTP::gtp_print,         this, _1), "Show the board");
 		newcallback("print",           bind(&PentagoGTP::gtp_print,         this, _1), "Alias for showboard");
+		newcallback("state",           bind(&PentagoGTP::gtp_state,         this, _1), "Output the board state in a simpler form than print, or set the board state");
 		newcallback("hash",            bind(&PentagoGTP::gtp_hash,          this, _1), "Output the hash for the current position");
 		newcallback("clear_board",     bind(&PentagoGTP::gtp_clearboard,    this, _1), "Clear the board, but keep the size");
 		newcallback("clear",           bind(&PentagoGTP::gtp_clearboard,    this, _1), "Alias for clear_board");
@@ -135,6 +136,7 @@ public:
 	}
 
 	GTPResponse gtp_echo(vecstr args);
+	GTPResponse gtp_state(vecstr args);
 	GTPResponse gtp_print(vecstr args);
 	GTPResponse gtp_hash(vecstr args);
 	string won_str(int outcome) const;

@@ -25,6 +25,39 @@ const uint64_t Board::xybits[36] = {
 const int16_t Board::scoremap[6] = { 0, 1, 3, 9, 27, 127 };
 
 
+Board::Board(string str) {
+	sides[1] = 0;
+	sides[2] = 0;
+	nummoves = 0;
+	outcome = -4;
+	cached_score = default_score;
+	cached_hash = 0;
+
+	assert(str.length() == 36);
+	int moved[3] = {0,0,0};
+	for(int i = 0; i < 36; i++){
+		uint8_t side = str[i] - '0';
+		assert(side >= 0 && side <= 2);
+
+		if(side > 0){
+			nummoves++;
+			sides[side] |= xybits[i];
+			moved[side]++;
+		}
+	}
+	assert(moved[1] == moved[2] || moved[1] == moved[2] + 1); //even number of moves per player
+	sides[0] = sides[1] | sides[2];
+	to_play = (nummoves % 2) + 1;
+}
+
+string Board::state() const {
+	string s;
+	for(int y = 0; y < 6; y++)
+		for(int x = 0; x < 6; x++)
+			s += to_str((int)get(x, y));
+	return s + "\n";
+}
+
 string Board::to_s(bool color) const {
 	string white = "O",
 	       black = "@",

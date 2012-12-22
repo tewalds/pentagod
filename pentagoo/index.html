@@ -39,16 +39,21 @@ window.addEvent('domready', function(){
 	<h2>Players Setup</h2>
 	<ul class="players-setup">
 	<li>
-	<h3><img src="images/tiny-white-piece.png" width="12" height="12" alt="(White)" /> Player 1 (starts first)</h3>
+	<h3><img src="images/tiny-white-piece.png" width="12" height="12" alt="(White)" /> Player 1</h3>
 	<p>
 	<label for="p1-h-l"><input type="radio" name="p1-box" checked="checked" id="p1-h-l" /> Human</label>
 	<label for="p1-c-l"><input type="radio" name="p1-box" id="p1-c-l" /> Computer</label>
-	<select id="p1-cl" disabled="disabled">
-	<option>Level 1</option>
-	<option>Level 2</option>
-	<option>Level 3</option>
-	<option>Level 4</option>
-	<option>Level 5</option>
+	<select id="p1-cp">
+		<option value="mcts">MCTS</option>
+		<option value="pns">PNS</option>
+		<option value="ab">AB</option>
+	</select>
+	<select id="p1-ct">
+		<option value="2">2 secs</option>
+		<option value="5" selected="selected">5 secs</option>
+		<option value="10">10 secs</option>
+		<option value="20">20 secs</option>
+		<option value="30">30 secs</option>
 	</select>
 	</p>
 	</li>
@@ -57,12 +62,17 @@ window.addEvent('domready', function(){
 	<p>
 	<label for="p2-h-l"><input type="radio" name="p2-box" checked="checked" id="p2-h-l" /> Human</label>
 	<label for="p2-c-l"><input type="radio" name="p2-box" id="p2-c-l" /> Computer</label>
-	<select id="p2-cl" disabled="disabled">
-	<option>Level 1</option>
-	<option>Level 2</option>
-	<option>Level 3</option>
-	<option>Level 4</option>
-	<option>Level 5</option>
+	<select id="p2-cp">
+		<option value="mcts">MCTS</option>
+		<option value="pns">PNS</option>
+		<option value="ab">AB</option>
+	</select>
+	<select id="p2-ct">
+		<option value="2">2 secs</option>
+		<option value="5" selected="selected">5 secs</option>
+		<option value="10">10 secs</option>
+		<option value="20">20 secs</option>
+		<option value="30">30 secs</option>
 	</select>
 	</p>
 	</li>
@@ -71,7 +81,6 @@ window.addEvent('domready', function(){
 	<p><strong>Notes</strong>:</p>
 	<ol>
 	<li><em>Undo</em> doesn't work when <em>Computer</em> is selected.</li>
-	<li>As for now, the Computer AI is <strong>not that good yet</strong>.</li>
 	</ol>
 	<p class="panel-button">
 	<button id="start-game-link"><strong>Start Game</strong></button>

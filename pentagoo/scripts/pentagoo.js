@@ -50,8 +50,9 @@ var Pentagoo = new Class({
 		this.lastMarbleHistory = [];
 		this.lastMarble = null;
 		this.gameType = 0;
-		this.computerLevel = [0,0];
-		
+		this.computerPlayer = ['',''];
+		this.computerTime = ['5','5'];
+
 		// Default values for variables
 		this.game = 0;
 		this.currentHistory = null;
@@ -327,12 +328,14 @@ var Pentagoo = new Class({
 		if($('p1-c-l').checked){
 			this.gameType = 1;
 			this.playerType = 2;
-			this.computerLevel[0] = $('p1-cl').selectedIndex;
+			this.computerPlayer[0] = $('p1-cp').value
+			this.computerTime[0] = $('p1-ct').value
 			$('player-1-type').set('text', 'Computer');
 			this.computerMove();
 		}
 		if($('p2-c-l').checked){
-			this.computerLevel[1] = $('p2-cl').selectedIndex;
+			this.computerPlayer[1] = $('p2-cp').value
+			this.computerTime[1] = $('p2-ct').value
 			this.gameType = (this.gameType == 1) ? 2 : 1;
 			$('player-2-type').set('text', 'Computer');
 		}
@@ -1053,7 +1056,8 @@ var Pentagoo = new Class({
 			// AI parameters
 			ai_parameters = {
 				'hist': moves.join(' '),
-				'l': this.computerLevel[this.player-1],
+				'p': this.computerPlayer[this.player-1],
+				't': this.computerTime[this.player-1],
 			};
 			
 			// Request AI's moves

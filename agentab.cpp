@@ -47,7 +47,6 @@ void AgentAB::search(double time, uint64_t maxiters, int verbose) {
 
 		if(verbose >= 3)
 			logerr("Move stats:\n" + move_stats(vector<Move>()));
-
 	}
 }
 
@@ -123,7 +122,7 @@ string AgentAB::move_stats(vector<Move> moves) const {
 		b.move(*m);
 
 	for(MoveIterator move(b); !move.done(); ++move){
-		if(const Node * n = tt(move.board().hash())) {
+		if(const Node * n = tt_get(move.board())) {
 			s += n->to_s(*move) + "\n";
 		} else {
 			s += "move: " + move->to_s() + ", unknown\n";
@@ -133,13 +132,13 @@ string AgentAB::move_stats(vector<Move> moves) const {
 }
 
 Move AgentAB::return_move(const Board & board, int verbose) const {
-	if(const Node * n = tt(board.hash()))
+	if(const Node * n = tt_get(board))
 		return n->bestmove;
 
 	int score = SCORE_LOSS;
 	Move best = M_RESIGN;
 	for(MoveIterator move(board); !move.done(); ++move){
-		if(const Node * n = tt(move.board().hash())) {
+		if(const Node * n = tt_get(move.board())) {
 			if(score < n->score){
 				score = n->score;
 				best = *move;
@@ -182,7 +181,9 @@ AgentAB::Node * AgentAB::tt(uint64_t hash) const {
 }
 
 AgentAB::Node * AgentAB::tt_get(const Board & b) const {
-	uint64_t h = b.hash();
+	return tt_get(b.hash());
+}
+AgentAB::Node * AgentAB::tt_get(uint64_t h) const {
 	Node * n = tt(h);
 	return (n->hash == h ? n : NULL);
 }

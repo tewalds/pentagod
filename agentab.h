@@ -97,6 +97,7 @@ private:
 	Move return_move(const Board & board, int verbose = 0) const;
 
 	Node * tt(uint64_t hash) const ;
+	Node * tt_get(uint64_t hash) const ;
 	Node * tt_get(const Board & b) const ;
 	void tt_set(const Node & n) ;
 };

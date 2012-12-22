@@ -31,14 +31,14 @@ var Pentagoo = new Class({
 
 	initialize: function(options) {
 		this.setOptions(options);
-		
+
 		this.initStuff();
 		this.generateEvents();
 		this.preloadStuff();
 	},
-	
+
 	initStuff: function(){
-		
+
 		// Init values for saved/unsaved game variables
 		this.boardMatrix = [];
 		for(var y=0; y<this.options.size; y++){
@@ -85,17 +85,17 @@ var Pentagoo = new Class({
 
 		// Styles for panels
 		if(!window.ie) $$('.panel').setStyle('opacity', '.85');
-		
+
 		this.cmove = [];
 
 		// Clear status
 		this.setStatus();
 	},
-	
+
 	// Generate events
 	generateEvents: function(){
 		var self = this;
-		
+
 		// Links
 		$('new-game-link').addEvent('click',function(){
 			if(!this.hasClass('disabled')) self.slidePanel('new-game');
@@ -259,7 +259,7 @@ var Pentagoo = new Class({
 
 		// Close the cover
 		this.boardCover(true);
-		
+
 		var self = this;
 
 		// Preload images and loading status
@@ -781,7 +781,7 @@ var Pentagoo = new Class({
 						$$('.history-buttons button').removeProperty('disabled');
 				}.bind(this)).delay(time);
 			}
-			
+
 			if(action == "undo"){
 				// Clear history pointer
 				this.currentHistory = null;
@@ -789,7 +789,7 @@ var Pentagoo = new Class({
 				// Remove last history item after undo
 				this.moveHistory.pop();
 				this.lastMarbleHistory.pop();
-				
+
 				// Disable undo link if history is empty
 				if(!this.moveHistory.length) $('undo-link').addClass('disabled');
 			}
@@ -972,7 +972,7 @@ var Pentagoo = new Class({
 
 			// Enable history link
 			$('history-link').removeClass('disabled');
-			
+
 			// Enable undo link
 			if(this.gameType == 0) $('undo-link').removeClass('disabled');
 		}
@@ -1044,7 +1044,7 @@ var Pentagoo = new Class({
 
 		// Close the cover
 		this.boardCover(true);
-		
+
 		if(this.playerType == 2){
 			//convert history to xytd format, same as expected as a response
 			var moves = [];
@@ -1059,7 +1059,7 @@ var Pentagoo = new Class({
 				'p': this.computerPlayer[this.player-1],
 				't': this.computerTime[this.player-1],
 			};
-			
+
 			// Request AI's moves
 			var request = new Request({
 				url: this.options.aiURL,
@@ -1082,5 +1082,4 @@ var Pentagoo = new Class({
 			}).send();
 		}
 	}
-	
 });

@@ -33,7 +33,7 @@ class PentagoHandler(BaseHTTPRequestHandler):
 	def do_GET(self):
 		if '?' in self.path:
 			uri, qs = self.path.split('?', 1)
-			params = {k: urllib.unquote(v) for k,v in urlparse.parse_qsl(qs) }
+			params = {k: urllib.unquote(v) for k,v in urlparse.parse_qsl(qs, True) }
 		else:
 			uri, params = self.path, {}
 
@@ -44,7 +44,7 @@ class PentagoHandler(BaseHTTPRequestHandler):
 
 	def call_ai(self, uri, params):
 		game = ""
-		hist = params['hist'].split(" ")
+		hist = filter(None, params['hist'].split(" "))
 		for m in hist:
 			game += " " + ymap[m[1]] + xmap[m[0]] + rmap[m[2:4]]
 

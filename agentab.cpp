@@ -86,7 +86,8 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 		//try the previous best move first
 		bestmove = node->bestmove;
 		Board n = board;
-		n.move(bestmove);
+		bool move_success = n.move(bestmove);
+		assert(move_success);
 		score = -negamax(n, -beta, -alpha, depth-1);
 	}
 
@@ -159,7 +160,8 @@ vector<Move> AgentAB::get_pv() const {
 		if(m == M_UNKNOWN || m == M_RESIGN)
 			break;
 		pv.push_back(m);
-		b.move(m);
+		bool move_success = b.move(m);
+		assert(move_success);
 	}
 
 	if(pv.size() == 0)

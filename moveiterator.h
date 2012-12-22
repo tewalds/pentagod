@@ -42,7 +42,8 @@ public:
 				}while(!base_board.valid_move_fast(move));
 			}
 			after = base_board;
-			after.move(move);
+			bool move_success = after.move(move);
+			assert(move_success);
 			if(unique){
 				uint64_t h = after.hash();
 				if(!hashes.add(h))

@@ -4,7 +4,6 @@
 //An Alpha-beta solver, single threaded with an optional transposition table.
 
 #include "agent.h"
-#include <climits>
 
 class AgentAB : public Agent {
 	static const int16_t SCORE_WIN  = 32767;

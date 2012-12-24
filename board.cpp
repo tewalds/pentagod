@@ -36,7 +36,7 @@ Board::Board(string str) {
 	assert(str.length() == 36);
 	int moved[3] = {0,0,0};
 	for(int i = 0; i < 36; i++){
-		uint8_t side = str[i] - '0';
+		int8_t side = str[i] - '0';
 		assert(side >= 0 && side <= 2);
 
 		if(side > 0){

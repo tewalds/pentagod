@@ -4,6 +4,7 @@
 //An Alpha-beta solver, single threaded with an optional transposition table.
 
 #include "agent.h"
+#include "xorshift.h"
 
 class AgentAB : public Agent {
 	static const int16_t SCORE_WIN  = 32767;
@@ -45,8 +46,9 @@ public:
 	int maxdepth;
 	uint64_t nodes_seen;
 	double time_used;
+	XORShift_uint32 rand;
 
-	AgentAB() {
+	AgentAB() : rand(std::rand()) {
 		maxdepth = 0;
 		nodes_seen = 0;
 		time_used = 0;

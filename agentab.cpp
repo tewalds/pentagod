@@ -64,7 +64,12 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 	}
 
 	if (depth <= 0){ //terminal node?
-		return -board.score();
+//		return -board.score();
+		return -((board.score()<<1) - (rand() & 0x1));
+//		return -((board.score()<<2) - (rand() & 0x3));
+//		return -((board.score()<<3) - (rand() & 0x7));
+//		return -((board.score()<<4) - (rand() & 0xF));
+//		return -((board.score()<<5) - (rand() & 0x1F));
 	}
 
 	int16_t score = SCORE_LOSS;

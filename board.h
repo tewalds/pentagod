@@ -277,8 +277,8 @@ private:
 		return m;
 	}
 
-	static uint64_t rotate_hash(uint64_t b){ // rotate one player
-		return ((b & 0xFFFFFFFFFFF8000ull) >> 15) | ((b & 0x7FFFull) << 45);
+	static uint64_t rotate_hash(uint64_t h){ // rotate one player
+		return ((h & 0xFFFFFFFFFFF8000ull) >> 15) | ((h & 0x7FFFull) << 45);
 	}
 
 	void rotate_board(){
@@ -311,11 +311,6 @@ private:
 		// 0  1  2  3  4  5  6  7  8
 		// 0  7  6  5  4  3  2  1  8
 
-		//flip along the vertical axix
-//		return (flipquad[(b & (0x1FFull <<  0)) >>  0] <<  9) |
-//		       (flipquad[(b & (0x1FFull <<  9)) >>  9] <<  0) |
-//		       (flipquad[(b & (0x1FFull << 18)) >> 18] << 27) |
-//		       (flipquad[(b & (0x1FFull << 27)) >> 27] << 18);
 		//flip along a diagonal axis
 		return (flipquad[(b & (0x1FFull <<  0)) >>  0] <<  0) |
 		       (flipquad[(b & (0x1FFull <<  9)) >>  9] << 27) |

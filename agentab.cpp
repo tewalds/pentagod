@@ -155,7 +155,8 @@ vector<Move> AgentAB::get_pv() const {
 	vector<Move> pv;
 
 	Board b = rootboard;
-	while (true) {
+	int i = 20;
+	while (i--) {
 		Move m = return_move(b);
 		if(m == M_UNKNOWN || m == M_RESIGN)
 			break;

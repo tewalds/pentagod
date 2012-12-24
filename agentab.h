@@ -28,7 +28,7 @@ class AgentAB : public Agent {
 		Node(uint64_t h = ~0ull, int16_t s = 0, Move b = M_UNKNOWN, int8_t d = 0, int8_t f = 0) : //. int8_t o = -3
 			hash(h), score(s), bestmove(b), depth(d), flag(f), padding(0xDEAD) { } //, outcome(o)
 
-		string to_s(Move move) const {
+		string to_s(Move move = M_UNKNOWN) const {
 			return "Node: move " + move.to_s() +
 					", score " + to_str(score) +
 					", depth " + to_str((int)depth) +

@@ -71,24 +71,24 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 	Move bestmove = M_RESIGN;
 	Node * node;
 
-	if(TT && (node = tt_get(board)) != NULL){
-		if(node->depth >= depth){
-			switch(node->flag){
-			case VALID:  return node->score;
-			case LBOUND: alpha = max(alpha, node->score); break;
-			case UBOUND: beta  = min(beta,  node->score); break;
-			default:     assert(false && "Unknown flag!");
-			}
-			if(alpha >= beta)
-				return node->score;
+	if(TT && (node = tt_get(board)) && node->depth >= depth){
+		switch(node->flag){
+		case VALID:  return node->score;
+		case LBOUND: alpha = max(alpha, node->score); break;
+		case UBOUND: beta  = min(beta,  node->score); break;
+		default:     assert(false && "Unknown flag!");
 		}
+		if(alpha >= beta)
+			return node->score;
 
 		//try the previous best move first
-		bestmove = node->bestmove;
-		Board n = board;
-		bool move_success = n.move(bestmove);
-		assert(move_success);
-		score = -negamax(n, -beta, -alpha, depth-1);
+		if(board.valid_move_fast(node->bestmove)){ // probably the best move, but for a symmetric version
+			bestmove = node->bestmove;
+			Board n = board;
+			bool move_success = n.move(bestmove);
+			assert(move_success);
+			score = -negamax(n, -beta, -alpha, depth-1);
+		}
 	}
 
 	if (score < beta) { // no cutoff from bestmove

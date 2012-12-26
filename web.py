@@ -52,6 +52,7 @@ class PentagoHandler(BaseHTTPRequestHandler):
 		for m in hist:
 			game += " " + ymap[m[1]] + xmap[m[0]] + rmap[m[2:4]]
 
+		gtp = None
 		try:
 			gtp = GTPClient("./pentagod")
 			if 'p' in params and params['p'] in ['mcts','pns','ab']:
@@ -63,7 +64,8 @@ class PentagoHandler(BaseHTTPRequestHandler):
 			r = gtp.cmd("genmove")
 			gtp.cmd("print")
 		finally:
-			gtp.close()
+			if gtp:
+				gtp.close()
 
 		self.send_response(200)
 		self.send_header('Content-type', mime_types["html"])

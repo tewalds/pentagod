@@ -12,7 +12,7 @@ void AgentPNS::search(double time, uint64_t maxiters, int verbose){
 	start_threads();
 
 	timeout = false;
-	Alarm timer(time, std::tr1::bind(&AgentPNS::timedout, this));
+	Alarm timer(time, std::bind(&AgentPNS::timedout, this));
 
 	//wait for the timer to stop them
 	runbarrier.wait();

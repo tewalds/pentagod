@@ -17,9 +17,9 @@ OBJECTS		= pentagod.o \
 #	solverpns_tt.o \
 
 ifdef DEBUG
-	CPPFLAGS	+= -g3 -Wall
+	CPPFLAGS	+= -std=c++0x -g3 -Wall
 else
-	CPPFLAGS	+= -O3 -funroll-loops -Wall
+	CPPFLAGS	+= -std=c++0x -O3 -funroll-loops -Wall
 
 	OSTYPE := $(shell uname -s)
 	ifeq ($(OSTYPE),Darwin)
@@ -42,7 +42,7 @@ pentagod: $(OBJECTS)
 
 
 clean:
-	rm -f *.o castro mm mm-with-freq.dat
+	rm -f *.o pentagod
 
 fresh: clean all
 

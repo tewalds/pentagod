@@ -12,6 +12,8 @@ void die(int code, const string & str){
 }
 
 int main(int argc, char **argv){
+	Move::test();
+
 	srand(Time().in_msec());
 	PentagoGTP gtp;
 

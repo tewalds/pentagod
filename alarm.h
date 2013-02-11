@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <tr1/functional>
+#include <functional>
 #include <vector>
 #include <signal.h>
 #include "time.h"
@@ -25,7 +25,7 @@
 
 class Alarm {
 public:
-	typedef std::tr1::function<void()> callback_t;
+	typedef std::function<void()> callback_t;
 
 	Alarm() : id(-1) { }
 	Alarm(double len, callback_t fn)   : id(-1) { (*this)(len, fn); }

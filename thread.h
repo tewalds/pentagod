@@ -1,14 +1,13 @@
 
 #pragma once
 
-#include <tr1/functional>
+#include <functional>
 #include <pthread.h>
 #include <unistd.h>
 #include <cassert>
 #include <time.h>
 
 using namespace std;
-using namespace tr1;
 using namespace placeholders; //for bind
 
 // http://gcc.gnu.org/onlinedocs/gcc/Atomic-Builtins.html

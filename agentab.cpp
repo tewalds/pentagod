@@ -14,7 +14,7 @@ void AgentAB::search(double time, uint64_t maxiters, int verbose) {
 
 	Alarm timer;
 	if (time > 0)
-		timer(time/15, std::tr1::bind(&AgentAB::timedout, this));
+		timer(time/15, std::bind(&AgentAB::timedout, this));
 
 	Time start;
 
@@ -64,8 +64,8 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 	}
 
 	if (depth <= 0){ //terminal node?
-//		return -board.score();
-		return -((board.score()<<1) - (rand() & 0x1));
+		return -board.score();
+//		return -((board.score()<<1) - (rand() & 0x1));
 //		return -((board.score()<<2) - (rand() & 0x3));
 //		return -((board.score()<<3) - (rand() & 0x7));
 //		return -((board.score()<<4) - (rand() & 0xF));
@@ -75,6 +75,13 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 	int16_t score = SCORE_LOSS;
 	Move bestmove = M_RESIGN;
 	Node * node;
+
+	const uint64_t find = 3276962;
+
+	if(board.hash() == find){
+		board.print();
+		logerr("orientation: " + to_str(board.orient()) + "\n");
+	}
 
 	if(TT && (node = tt_get(board)) && node->depth >= depth){
 		switch(node->flag){
@@ -87,13 +94,16 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 			return node->score;
 
 		//try the previous best move first
-		if(board.valid_move_fast(node->bestmove)){ // probably the best move, but for a symmetric version
-			bestmove = node->bestmove;
-			Board n = board;
-			bool move_success = n.move(bestmove);
-			assert(move_success);
-			score = -negamax(n, -beta, -alpha, depth-1);
+		bestmove = node->bestmove;
+		Board n = board;
+		bool move_success = n.move(bestmove);
+
+		if(!move_success){
+			logerr("hash: " + to_str(board.hash()) + ", " + node->to_s() + "\n");
 		}
+
+		assert(move_success);
+		score = -negamax(n, -beta, -alpha, depth-1);
 	}
 
 	if (score < beta) { // no cutoff from bestmove
@@ -110,6 +120,11 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 				}
 			}
 		}
+	}
+
+	if(board.hash() == find){
+		board.print();
+		logerr("orientation: " + to_str(board.orient()) + ", bestmove: " + bestmove.to_s() + ", " + to_str(bestmove.o) + "\n");
 	}
 
 	if (TT) {

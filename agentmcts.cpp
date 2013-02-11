@@ -95,7 +95,7 @@ void AgentMCTS::search(double time, uint64_t max_runs, int verbose){
 
 	Alarm timer;
 	if(time > 0)
-		timer(time - (Time() - starttime), std::tr1::bind(&AgentMCTS::timedout, this));
+		timer(time - (Time() - starttime), std::bind(&AgentMCTS::timedout, this));
 
 	//wait for the timer to stop them
 	runbarrier.wait();

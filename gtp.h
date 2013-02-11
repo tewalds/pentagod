@@ -7,10 +7,9 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
-#include <tr1/functional>
+#include <functional>
 
 using namespace std;
-using namespace tr1;
 using namespace placeholders; //for bind
 
 struct GTPResponse {

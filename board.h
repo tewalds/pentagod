@@ -40,6 +40,7 @@ class Board{
 	uint8_t nummoves;  // how many moves have been made so far
 	uint8_t to_play;   // who's turn is it next, 1|2
 	mutable int8_t outcome; //-3 = unknown, 0 = tie, 1,2 = player win
+	mutable uint8_t orientation;
 	mutable int16_t cached_score;
 	mutable uint64_t cached_hash;
 	static const int16_t default_score = 0xDEAD;
@@ -54,6 +55,7 @@ public:
 		nummoves = 0;
 		to_play = 1;
 		outcome = -4;
+		orientation = 0;
 		cached_score = default_score;
 		cached_hash = 0;
 	}
@@ -137,6 +139,9 @@ public:
 		return (to_play == 1 ? -s : s);
 	}
 
+	unsigned int orient() const {
+		return orientation;
+	}
 
 	uint64_t hash() const {
 		if(!cached_hash)
@@ -144,8 +149,13 @@ public:
 		return cached_hash;
 	}
 
-	bool move(const Move & m){
+	bool move(Move mo){
 		assert(outcome < 0);
+
+		Move m = mo.rotate(orientation);
+
+		if(m != mo)
+			logerr(mo.to_s() + ", " + to_str(mo.o) + " -> " + m.to_s() + ", " + to_str(m.o) + ": " + to_str((0x14+mo.orientation()-orientation) & 0x1B ) + "\n");
 
 		//TODO: only call valid_move if the move didn't come from an iterator?
 		if(!valid_move(m))
@@ -259,25 +269,34 @@ private:
 		return h;
 	}
 
+	static inline void choose(uint64_t & m, uint64_t h, uint8_t & o, uint8_t no){
+		if(m > h){
+			m = h;
+			o = no;
+		}
+	}
+
 	uint64_t full_hash() const {
+		//make sure this matches Move::rotate
 		Board b(*this);
 
-		uint64_t m, h;
-		m =        (h = b.simple_hash());
-		m = min(m, (h = rotate_hash(h)));
-		m = min(m, (h = rotate_hash(h)));
-		m = min(m, (    rotate_hash(h)));
-
+		uint64_t h, m = ~0;
+		uint8_t o = 0;
+		choose(m, (h = b.simple_hash()), o, 0);
+		choose(m, (h = rotate_hash(h) ), o, 1);
+		choose(m, (h = rotate_hash(h) ), o, 2);
+		choose(m, (    rotate_hash(h) ), o, 3);
 		b.flip_board();
-		m = min(m, (h = b.simple_hash()));
-		m = min(m, (h = rotate_hash(h)));
-		m = min(m, (h = rotate_hash(h)));
-		m = min(m, (    rotate_hash(h)));
+		choose(m, (h = b.simple_hash()), o, 8);
+		choose(m, (h = rotate_hash(h) ), o, 11);
+		choose(m, (h = rotate_hash(h) ), o, 10);
+		choose(m, (    rotate_hash(h) ), o, 9);
 
+		orientation = o;
 		return m;
 	}
 
-	static uint64_t rotate_hash(uint64_t h){ // rotate one player
+	static uint64_t rotate_hash(uint64_t h){ // rotate cw
 		return ((h & 0xFFFFFFFFFFF8000ull) >> 15) | ((h & 0x7FFFull) << 45);
 	}
 
@@ -312,6 +331,7 @@ private:
 		// 0  7  6  5  4  3  2  1  8
 
 		//flip along a diagonal axis
+		//make sure this matches Move::rotate
 		return (flipquad[(b & (0x1FFull <<  0)) >>  0] <<  0) |
 		       (flipquad[(b & (0x1FFull <<  9)) >>  9] << 27) |
 		       (flipquad[(b & (0x1FFull << 18)) >> 18] << 18) |

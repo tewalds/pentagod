@@ -1,4 +1,5 @@
 *.o
+*.pyc
 pentagod
 pentagod-*
 callgrind.out.*
@@ -16,4 +17,3 @@ callgrind.out.*
 *.make
 *.d
 *.fls
-

@@ -155,7 +155,7 @@ public:
 		Move m = mo.rotate(orientation);
 
 		if(m != mo)
-			logerr(mo.to_s() + ", " + to_str(mo.o) + " -> " + m.to_s() + ", " + to_str(m.o) + ": " + to_str((0x14+mo.orientation()-orientation) & 0x1B ) + "\n");
+			logerr(mo.to_s() + ", " + to_str(mo.o) + " -> " + m.to_s() + ", " + to_str(m.o) + "\n");
 
 		//TODO: only call valid_move if the move didn't come from an iterator?
 		if(!valid_move(m))
@@ -288,15 +288,15 @@ private:
 		choose(m, (    rotate_hash(h) ), o, 3);
 		b.flip_board();
 		choose(m, (h = b.simple_hash()), o, 8);
-		choose(m, (h = rotate_hash(h) ), o, 11);
+		choose(m, (h = rotate_hash(h) ), o, 9);
 		choose(m, (h = rotate_hash(h) ), o, 10);
-		choose(m, (    rotate_hash(h) ), o, 9);
+		choose(m, (    rotate_hash(h) ), o, 11);
 
 		orientation = o;
 		return m;
 	}
 
-	static uint64_t rotate_hash(uint64_t h){ // rotate cw
+	static uint64_t rotate_hash(uint64_t h){ // rotate ccw
 		return ((h & 0xFFFFFFFFFFF8000ull) >> 15) | ((h & 0x7FFFull) << 45);
 	}
 
@@ -347,5 +347,3 @@ private:
 		return (b & ~m) | (((b & m) >> 6) & m) | (((b & m) << 2) & m);
 	}
 };
-
-

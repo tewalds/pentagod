@@ -129,13 +129,13 @@ Given the two board flips, do we need to flip the move or change the direction o
 		}
 	}
 
-#define check(a, ao, b, bo) { \
-		printf("%s %2i <=> %s %2i ", a, ao, b, bo); \
-		Move am = Move(b, bo).rotate(ao); \
-		Move bm = Move(a, ao).rotate(bo); \
-		printf("  :  %s %2i <=> %s %2i\n", am.to_s().c_str(), am.o, bm.to_s().c_str(), bm.o); \
-		assert(bm == Move(b, bo)); \
-		assert(am == Move(a, ao)); \
+	static void check(const std::string a, int ao, const std::string b, int bo) {
+//		printf("%s %2i <=> %s %2i ", a.c_str(), ao, b.c_str(), bo);
+		Move am = Move(b, bo).rotate(ao);
+		Move bm = Move(a, ao).rotate(bo);
+//		printf("  :  %s %2i <=> %s %2i\n", am.to_s().c_str(), am.o, bm.to_s().c_str(), bm.o);
+		assert(bm == Move(b, bo));
+		assert(am == Move(a, ao));
 	}
 
 	static void test() {

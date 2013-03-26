@@ -287,10 +287,10 @@ private:
 		choose(m, (h = rotate_hash(h) ), o, 2);
 		choose(m, (    rotate_hash(h) ), o, 3);
 		b.flip_board();
-		choose(m, (h = b.simple_hash()), o, 8);
-		choose(m, (h = rotate_hash(h) ), o, 9);
-		choose(m, (h = rotate_hash(h) ), o, 10);
-		choose(m, (    rotate_hash(h) ), o, 11);
+		choose(m, (h = b.simple_hash()), o, 4);
+		choose(m, (h = rotate_hash(h) ), o, 5);
+		choose(m, (h = rotate_hash(h) ), o, 6);
+		choose(m, (    rotate_hash(h) ), o, 7);
 
 		orientation = o;
 		return m;

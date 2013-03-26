@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <cstdlib>
+#include <cassert>
 #include "string.h"
 #include "log.h"
 
@@ -39,11 +40,6 @@ quadrants:
 
 quadrant  = rotation >> 1
 direction = rotation & 1
-
-flip move: Move(y, x, (9-r)&7). Works because (9-1)&7=8&7=0, (9-1)&7=8&7=0
-rotate cw:  Move(5-y,   x, (r+2)&7)
-rotate 180: Move(5-x, 5-y, (r+4)&7)
-rotate ccw: Move(  y, 5-x, (r+6)&7)
 
 */
 
@@ -101,89 +97,33 @@ Given the two board rotations, what move rotation is needed?
 (4+o-other)&3
 
 Given the two board flips, do we need to flip the move or change the direction of rotation?
-0,0 => 0
-0,1 => 1
-1,0 => 2
-1,1 => 3
+0,0 => 0, 0,1 => 1
+1,0 => 2, 1,1 => 3
 
 (o<<1) | other
 */
 
-		int c = ((o&8)<<1) | (other&8) | ((4 + (o&3) - (other&3))&3);
+		int c = ((o&4)<<1) | (other&4) | ((4 + (o&3) - (other&3))&3);
 //		printf(" :  %2i -> %2i = %#4x ", o, other, c);
 
 		switch(c){
-		case 0x0: case 0x18: return *this;
+		case 0x0: case 0xC: return *this;
 		                          //Move(  x(),   y(),       r, other);
-		case 0x1: case 0x1B: return Move(5-y(),   x(), (r+2)&7, other);
-		case 0x2: case 0x1A: return Move(5-x(), 5-y(), (r+4)&7, other);
-		case 0x3: case 0x19: return Move(  y(), 5-x(), (r+6)&7, other);
+		case 0x1: case 0xF: return Move(5-y(),   x(), (r+2)&7, other);
+		case 0x2: case 0xE: return Move(5-x(), 5-y(), (r+4)&7, other);
+		case 0x3: case 0xD: return Move(  y(), 5-x(), (r+6)&7, other);
 
-		case 0x10: case 0x8: return Move(  y(),   x(), ( 9-r)&7, other);
-		case 0x11: case 0xB: return Move(5-x(),   y(), (11-r)&7, other);
-		case 0x12: case 0xA: return Move(5-y(), 5-x(), (13-r)&7, other);
-		case 0x13: case 0x9: return Move(  x(), 5-y(), (15-r)&7, other);
+		case 0x8: case 0x4: return Move(  y(),   x(), ( 9-r)&7, other);
+		case 0x9: case 0x7: return Move(5-x(),   y(), (11-r)&7, other);
+		case 0xA: case 0x6: return Move(5-y(), 5-x(), (13-r)&7, other);
+		case 0xB: case 0x5: return Move(  x(), 5-y(), (15-r)&7, other);
 		default:
 			printf("o: %i, other: %i, c: %#4x", o, other, c);
 			assert(false && "Bad orientation?!?");
 		}
 	}
 
-	static void check(const std::string a, int ao, const std::string b, int bo) {
-//		printf("%s %2i <=> %s %2i ", a.c_str(), ao, b.c_str(), bo);
-		Move am = Move(b, bo).rotate(ao);
-		Move bm = Move(a, ao).rotate(bo);
-//		printf("  :  %s %2i <=> %s %2i\n", am.to_s().c_str(), am.o, bm.to_s().c_str(), bm.o);
-		assert(bm == Move(b, bo));
-		assert(am == Move(a, ao));
-	}
-
-	static void test() {
-		check("b1s", 0, "b1s", 0);
-		check("b1s", 0, "f2y", 1);
-		check("b1s", 0, "e6w", 2);
-		check("b1s", 0, "a5u", 3);
-		check("b1s", 0, "a2t", 8);
-		check("b1s", 0, "b6v", 9);
-		check("b1s", 0, "f5x",10);
-		check("b1s", 0, "e1z",11);
-
-		check("b1s", 1, "a5u", 0);
-		check("b1s", 1, "b1s", 1);
-		check("b1s", 1, "f2y", 2);
-		check("b1s", 1, "e6w", 3);
-		check("b1s", 1, "e1z", 8);
-		check("b1s", 1, "a2t", 9);
-		check("b1s", 1, "b6v",10);
-		check("b1s", 1, "f5x",11);
-
-		check("b1s", 2, "e6w", 0);
-		check("b1s", 2, "a5u", 1);
-		check("b1s", 2, "b1s", 2);
-		check("b1s", 2, "f2y", 3);
-		check("b1s", 2, "f5x", 8);
-		check("b1s", 2, "e1z", 9);
-		check("b1s", 2, "a2t",10);
-		check("b1s", 2, "b6v",11);
-
-		check("b1s", 8, "b1s", 8);
-		check("b1s", 8, "a5u", 9);
-		check("b1s", 8, "e6w",10);
-		check("b1s", 8, "f2y",11);
-		check("b1s", 8, "a2t", 0);
-		check("b1s", 8, "e1z", 1);
-		check("b1s", 8, "f5x", 2);
-		check("b1s", 8, "b6v", 3);
-
-		check("b1s", 9, "f2y", 8);
-		check("b1s", 9, "b1s", 9);
-		check("b1s", 9, "a5u",10);
-		check("b1s", 9, "e6w",11);
-		check("b1s", 9, "b6v", 0);
-		check("b1s", 9, "a2t", 1);
-		check("b1s", 9, "e1z", 2);
-		check("b1s", 9, "f5x", 3);
-	}
+	static void test();
 
 	std::string to_s() const {
 		if(l == M_UNKNOWN) return "unknown";

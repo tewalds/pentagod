@@ -8,6 +8,7 @@ OBJECTS		= pentagod.o \
 	gtpagent.o \
 	string.o \
 	board.o \
+	move.o \
 	agentmcts.o \
 	agentmctsthread.o \
 	agentpns.o \
@@ -75,8 +76,8 @@ gtpagent.o: gtpagent.cpp pentagogtp.h gtp.h string.h game.h board.h \
 gtpgeneral.o: gtpgeneral.cpp pentagogtp.h gtp.h string.h game.h board.h \
  move.h xorshift.h agent.h types.h moveiterator.h hashset.h agentmcts.h \
  time.h depthstats.h thread.h compacttree.h log.h agentpns.h agentab.h
+move.o: move.cpp move.h string.h log.h
 pentagod.o: pentagod.cpp pentagogtp.h gtp.h string.h game.h board.h \
  move.h xorshift.h agent.h types.h moveiterator.h hashset.h agentmcts.h \
  time.h depthstats.h thread.h compacttree.h log.h agentpns.h agentab.h
 string.o: string.cpp string.h types.h
-

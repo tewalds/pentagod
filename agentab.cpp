@@ -100,6 +100,7 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 
 		if(!move_success){
 			logerr("hash: " + to_str(board.hash()) + ", " + node->to_s() + "\n");
+			logerr(board.to_s());
 		}
 
 		assert(move_success);

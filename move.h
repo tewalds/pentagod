@@ -19,7 +19,7 @@ struct Move {
 	unsigned o : 4;
 //	int8_t l, r, o; //location, rotation, orientation
 
-/* location = 
+/* location =
  0  1  2  3  4  5
  6  7  8  9 10 11
 12 13 14 15 16 17
@@ -83,63 +83,59 @@ rotate ccw: Move(  y, 5-x, (r+6)&7)
 	int orientation() const { return o; }
 
 	Move rotate(int other) const {
-//		flip move:  Move(y, x, (9-r)&7). Works because (9-1)&7=8&7=0, (9-1)&7=8&7=0
-//		rotate cw:  Move(5-y,   x, (r+2)&7)
-//		rotate 180: Move(5-x, 5-y, (r+4)&7)
-//		rotate ccw: Move(  y, 5-x, (r+6)&7)
-
-		if(l < 0)
+		if(l < 0) //special
 			return *this;
+
 /*
-0,0 => 0
-0,1 => 3
-0,2 => 2
-0,3 => 1
-1,0 => 1
-1,1 => 0
-1,2 => 3
-1,3 => 2
-2,0 => 2
-2,1 => 1
-2,2 => 0
-2,3 => 3
-3,0 => 3
-3,1 => 2
-3,2 => 1
-3,3 => 0
+flip move:  Move(y, x, (9-r)&7). Works because (9-1)&7=8&7=0, (9-1)&7=8&7=0
+rotate cw:  Move(5-y,   x, (r+2)&7)
+rotate 180: Move(5-x, 5-y, (r+4)&7)
+rotate ccw: Move(  y, 5-x, (r+6)&7)
+
+Given the two board rotations, what move rotation is needed?
+0,0 => 0, 0,1 => 3, 0,2 => 2, 0,3 => 1
+1,0 => 1, 1,1 => 0, 1,2 => 3, 1,3 => 2
+2,0 => 2, 2,1 => 1, 2,2 => 0, 2,3 => 3
+3,0 => 3, 3,1 => 2, 3,2 => 1, 3,3 => 0
 
 (4+o-other)&3
 
+Given the two board flips, do we need to flip the move or change the direction of rotation?
 0,0 => 0
 0,1 => 1
-1,0 => 1
-1,1 => 0
+1,0 => 2
+1,1 => 3
 
+(o<<1) | other
 */
-		int ori = o;
-//		printf("%i - %i = %i: ", ori, other, (0x14+ori-other) & 0x1B);
 
-		switch((0x14+ori-other) & 0x1B){
-		case 0:	case 16: return *this;
-		                      //Move(  x(),   y(),       r, other);
-		case 1: case 17: return Move(5-y(),   x(), (r+2)&7, other);
-		case 2: case 18: return Move(5-x(), 5-y(), (r+4)&7, other);
-		case 3: case 19: return Move(  y(), 5-x(), (r+6)&7, other);
+		int c = ((o&8)<<1) | (other&8) | ((4 + (o&3) - (other&3))&3);
+//		printf(" :  %2i -> %2i = %#4x ", o, other, c);
 
-		case 8:  case 24: return Move(  y(),   x(), ( 9-r)&7, other);
-		case 9:  case 27: return Move(  x(), 5-y(), (15-r)&7, other);
-		case 10: case 26: return Move(5-y(), 5-x(), (13-r)&7, other);
-		case 11: case 25: return Move(5-x(),   y(), (11-r)&7, other);
+		switch(c){
+		case 0x0: case 0x18: return *this;
+		                          //Move(  x(),   y(),       r, other);
+		case 0x1: case 0x1B: return Move(5-y(),   x(), (r+2)&7, other);
+		case 0x2: case 0x1A: return Move(5-x(), 5-y(), (r+4)&7, other);
+		case 0x3: case 0x19: return Move(  y(), 5-x(), (r+6)&7, other);
+
+		case 0x10: case 0x8: return Move(  y(),   x(), ( 9-r)&7, other);
+		case 0x11: case 0xB: return Move(5-x(),   y(), (11-r)&7, other);
+		case 0x12: case 0xA: return Move(5-y(), 5-x(), (13-r)&7, other);
+		case 0x13: case 0x9: return Move(  x(), 5-y(), (15-r)&7, other);
 		default:
-			printf("Move.o: %i, other: %i, o^other: %i", o, other, o^other);
+			printf("o: %i, other: %i, c: %#4x", o, other, c);
 			assert(false && "Bad orientation?!?");
 		}
 	}
 
 #define check(a, ao, b, bo) { \
-		Move c = Move(a, ao).rotate(bo); \
-		printf("%s %i => %s %i: %s %i\n", a, ao, b, bo, c.to_s().c_str(), c.orientation()); \
-		assert(c == Move(b, bo)); \
+		printf("%s %2i <=> %s %2i ", a, ao, b, bo); \
+		Move am = Move(b, bo).rotate(ao); \
+		Move bm = Move(a, ao).rotate(bo); \
+		printf("  :  %s %2i <=> %s %2i\n", am.to_s().c_str(), am.o, bm.to_s().c_str(), bm.o); \
+		assert(bm == Move(b, bo)); \
+		assert(am == Move(a, ao)); \
 	}
 
 	static void test() {
@@ -152,33 +148,41 @@ rotate ccw: Move(  y, 5-x, (r+6)&7)
 		check("b1s", 0, "f5x",10);
 		check("b1s", 0, "e1z",11);
 
-		check("b1s", 0, "b1s", 0);
-		check("f2y", 1, "b1s", 0);
-		check("e6w", 2, "b1s", 0);
-		check("a5u", 3, "b1s", 0);
-		check("a2t", 8, "b1s", 0);
-		check("b6v", 9, "b1s", 0);
-		check("f5x",10, "b1s", 0);
-		check("e1z",11, "b1s", 0);
+		check("b1s", 1, "a5u", 0);
+		check("b1s", 1, "b1s", 1);
+		check("b1s", 1, "f2y", 2);
+		check("b1s", 1, "e6w", 3);
+		check("b1s", 1, "e1z", 8);
+		check("b1s", 1, "a2t", 9);
+		check("b1s", 1, "b6v",10);
+		check("b1s", 1, "f5x",11);
 
-		check("d3t", 1, "c3v", 0);
-		check("d3t", 1, "d3t", 1);
-		check("d3t", 1, "d4z", 2);
-		check("d3t", 1, "c4x", 3);
-		check("d3t", 1, "c3y", 8);
-		check("d3t", 1, "c4s", 9);
-		check("d3t", 1, "d4u",10);
-		check("d3t", 1, "d3w",11);
+		check("b1s", 2, "e6w", 0);
+		check("b1s", 2, "a5u", 1);
+		check("b1s", 2, "b1s", 2);
+		check("b1s", 2, "f2y", 3);
+		check("b1s", 2, "f5x", 8);
+		check("b1s", 2, "e1z", 9);
+		check("b1s", 2, "a2t",10);
+		check("b1s", 2, "b6v",11);
 
-/*		check("d4s", 9, "", 0);
-		check("d4s", 9, "d4t", 1);
-		check("d4s", 9, "", 2);
-		check("d4s", 9, "", 3);
-		check("d4s", 9, "", 8);
-		check("d4s", 9, "d4s", 9);
-		check("d4s", 9, "", 10);
-		check("d4s", 9, "", 11);
-*/
+		check("b1s", 8, "b1s", 8);
+		check("b1s", 8, "a5u", 9);
+		check("b1s", 8, "e6w",10);
+		check("b1s", 8, "f2y",11);
+		check("b1s", 8, "a2t", 0);
+		check("b1s", 8, "e1z", 1);
+		check("b1s", 8, "f5x", 2);
+		check("b1s", 8, "b6v", 3);
+
+		check("b1s", 9, "f2y", 8);
+		check("b1s", 9, "b1s", 9);
+		check("b1s", 9, "a5u",10);
+		check("b1s", 9, "e6w",11);
+		check("b1s", 9, "b6v", 0);
+		check("b1s", 9, "a2t", 1);
+		check("b1s", 9, "e1z", 2);
+		check("b1s", 9, "f5x", 3);
 	}
 
 	std::string to_s() const {
@@ -207,4 +211,3 @@ struct PairMove {
 	PairMove(Move A = M_UNKNOWN, Move B = M_UNKNOWN) : a(A), b(B) { }
 	PairMove(MoveSpecial A) : a(Move(A)), b(M_UNKNOWN) { }
 };
-

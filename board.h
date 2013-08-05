@@ -46,7 +46,7 @@ class Board{
 	static const int16_t default_score = 0xDEAD;
 public:
 	static const short unique_depth = 10;  //look for redundant moves up to this depth
-	static const short fullhash_depth = 5; //also consider rotations/mirrors of the board
+	static const short fullhash_depth = 50; //also consider rotations/mirrors of the board
 
 	Board(){
 		sides[0] = 0;
@@ -55,13 +55,15 @@ public:
 		nummoves = 0;
 		to_play = 1;
 		outcome = -4;
-		orientation = 0;
+		orientation = 8;
 		cached_score = default_score;
 		cached_hash = 0;
 	}
 
 	//take a position as 01012200 ... of length 36, left to right, top to bottom, all [012]
 	Board(string str);
+
+	static void test();
 
 	int num_moves() const { return nummoves; }
 	int moves_remain() const { return (won() >= 0 ? 0 : 36 - nummoves); }
@@ -140,6 +142,8 @@ public:
 	}
 
 	unsigned int orient() const {
+		if(!cached_hash)
+			hash();
 		return orientation;
 	}
 
@@ -152,10 +156,8 @@ public:
 	bool move(Move mo){
 		assert(outcome < 0);
 
+		orient();
 		Move m = mo.rotate(orientation);
-
-		if(m != mo)
-			logerr(mo.to_s() + ", " + to_str(mo.o) + " -> " + m.to_s() + ", " + to_str(m.o) + "\n");
 
 		//TODO: only call valid_move if the move didn't come from an iterator?
 		if(!valid_move(m))
@@ -183,6 +185,11 @@ public:
 		outcome = -4;
 		cached_score = default_score;
 		cached_hash = 0;
+		orientation = 8; //start with an unoriented board
+
+
+		if(m != mo)
+			logerr(mo.to_s(true) + " -> " + m.to_s(true) + " -> " + to_str(orient()) + "\n");
 
 		return true;
 	}
@@ -218,6 +225,7 @@ public:
 		outcome = -4;
 		cached_score = default_score;
 		cached_hash = 0;
+		orientation = 8;
 
 		return true;
 	}
@@ -250,6 +258,7 @@ public:
 		outcome = -4;
 		cached_score = default_score;
 		cached_hash = 0;
+		orientation = 8;
 
 		return true;
 	}
@@ -266,6 +275,7 @@ private:
 		h |= ((uint64_t)(lookup3to2[((w & (0x1FFull << 18)) | (b & (0x1FFull <<  9))) >>  9])) << 15;
 		h |= ((uint64_t)(lookup3to2[((w & (0x1FFull << 27)) | (b & (0x1FFull << 18))) >> 18])) << 30;
 		h |= ((uint64_t)(lookup3to2[((w & (0x1FFull << 36)) | (b & (0x1FFull << 27))) >> 27])) << 45;
+		orientation = 8;
 		return h;
 	}
 
@@ -288,9 +298,9 @@ private:
 		choose(m, (    rotate_hash(h) ), o, 3);
 		b.flip_board();
 		choose(m, (h = b.simple_hash()), o, 4);
-		choose(m, (h = rotate_hash(h) ), o, 5);
+		choose(m, (h = rotate_hash(h) ), o, 7); //why are 5 and 7 reversed?
 		choose(m, (h = rotate_hash(h) ), o, 6);
-		choose(m, (    rotate_hash(h) ), o, 7);
+		choose(m, (    rotate_hash(h) ), o, 5);
 
 		orientation = o;
 		return m;

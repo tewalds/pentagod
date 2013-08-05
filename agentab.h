@@ -29,12 +29,12 @@ class AgentAB : public Agent {
 		Node(uint64_t h = ~0ull, int16_t s = 0, Move b = M_UNKNOWN, int8_t d = 0, int8_t f = 0) : //. int8_t o = -3
 			hash(h), score(s), bestmove(b), depth(d), flag(f), padding(0xDEAD) { } //, outcome(o)
 
-		string to_s(Move move = M_UNKNOWN) const {
-			return "Node: move " + move.to_s() +
-					", score " + to_str(score) +
+		string to_s(int orientation=8) const {
+			return  "score " + to_str(score) +
 					", depth " + to_str((int)depth) +
 					", flag " + to_str((int)flag) +
-					", best " + bestmove.to_s();
+					", best " + bestmove.to_s(true) +
+					(orientation == 8 ? string() : "/" + bestmove.rotate(orientation).to_s(true));
 		}
 	};
 
@@ -102,4 +102,3 @@ private:
 	Node * tt_get(const Board & b) const ;
 	void tt_set(const Node & n) ;
 };
-

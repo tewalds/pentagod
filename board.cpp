@@ -55,7 +55,7 @@ string Board::state() const {
 	for(int y = 0; y < 6; y++)
 		for(int x = 0; x < 6; x++)
 			s += to_str((int)get(x, y));
-	return s + "\n";
+	return s;
 }
 
 string Board::to_s(bool color) const {
@@ -90,7 +90,7 @@ string Board::to_s(bool color) const {
 
 	string s;
 	s += coord;
-	s += "    "; 
+	s += "    ";
 	for(unsigned int i = 0; i < sizeof(top)/sizeof(string); i++)
 		s += top[i];
 	s += "\n";
@@ -106,7 +106,7 @@ string Board::to_s(bool color) const {
 		}
 		s += coord + right[y] + "\n";
 	}
-	s += "    "; 
+	s += "    ";
 	for(unsigned int i = 0; i < sizeof(bottom)/sizeof(string); i++)
 		s += bottom[i];
 	s += reset + "\n";
@@ -233,3 +233,132 @@ uint16_t * gen_lookup3to2(unsigned int inbits, unsigned int outbits){
 }
 const uint16_t * Board::lookup3to2 = gen_lookup3to2(9, 15);
 
+
+void check(uint64_t h, uint8_t o, Board &b){
+	if(h != b.hash() || o != b.orient())
+		printf("expected: %lu / %i, got: %lu / %i\n%s", h, o, b.hash(), b.orient(), b.to_s().c_str());
+	assert(h == b.hash());
+	assert(o == b.orient());
+}
+void check(uint64_t h, uint8_t o, string m){
+	Board b;
+	b.move(m);
+	check(h, o, b);
+}
+void check(uint64_t h, uint8_t o, std::initializer_list<string> moves){
+	Board b;
+	for(string m : moves){
+		b.move(m);
+	}
+	check(h, o, b);
+}
+
+void Board::test() {
+	printf("board tests\n");
+
+	//a single non-rotated piece leads to known board orientations
+	check(6, 0, "a2z");
+	check(6, 1, "b6t");
+	check(6, 2, "f5v");
+	check(6, 3, "e1x");
+	check(6, 4, "b1u");
+	check(6, 5, "a5w");
+	check(6, 6, "e6y");
+	check(6, 7, "f2s");
+
+	check(2, 0, "a1z");
+	check(2, 1, "a6t");
+	check(2, 2, "f6v");
+	check(2, 3, "f1x");
+
+	//a pair of non-rotated pieces lead to known board orientations
+	check(15, 0, {"a2z", "a3z"});
+	check(15, 1, {"b6t", "c6t"});
+	check(15, 2, {"f5v", "f4v"});
+	check(15, 3, {"e1x", "d1x"});
+	check(15, 4, {"b1u", "c1u"});
+	check(15, 5, {"a5w", "a4w"});
+	check(15, 6, {"e6y", "d6y"});
+	check(15, 7, {"f2s", "f3s"});
+
+	//a single oriented piece leads to a known board orientation
+	check(6, 0, "a2z:0");
+	check(6, 1, "a2z:1");
+	check(6, 2, "a2z:2");
+	check(6, 3, "a2z:3");
+	check(6, 4, "a2z:4");
+	check(6, 5, "a2z:5");
+	check(6, 6, "a2z:6");
+	check(6, 7, "a2z:7");
+
+	//a single oriented piece leads to a known board orientation
+	check(6, 1, "b6t:0");
+	check(6, 2, "b6t:1");
+	check(6, 3, "b6t:2");
+	check(6, 0, "b6t:3");
+	check(6, 7, "b6t:4");
+	check(6, 4, "b6t:5");
+	check(6, 5, "b6t:6");
+	check(6, 6, "b6t:7");
+
+	//a single oriented piece leads to a known board orientation
+	check(6, 2, "f5v:0");
+	check(6, 3, "f5v:1");
+	check(6, 0, "f5v:2");
+	check(6, 1, "f5v:3");
+	check(6, 6, "f5v:4");
+	check(6, 7, "f5v:5");
+	check(6, 4, "f5v:6");
+	check(6, 5, "f5v:7");
+
+	//a single oriented piece leads to a known board orientation
+	check(6, 4, "b1u:0");
+	check(6, 5, "b1u:1");
+	check(6, 6, "b1u:2");
+	check(6, 7, "b1u:3");
+	check(6, 0, "b1u:4");
+	check(6, 1, "b1u:5");
+	check(6, 2, "b1u:6");
+	check(6, 3, "b1u:7");
+
+	//a single oriented piece leads to a known board orientation
+	check(6, 5, "a5w:0");
+	check(6, 6, "a5w:1");
+	check(6, 7, "a5w:2");
+	check(6, 4, "a5w:3");
+	check(6, 3, "a5w:4");
+	check(6, 0, "a5w:5");
+	check(6, 1, "a5w:6");
+	check(6, 2, "a5w:7");
+
+
+	//a pair of pieces
+	check(15, 0, {"a2z:0", "a3z"});
+	check(15, 0, {"a2z:0", "a3z:0"});
+	check(15, 1, {"a2z:1", "c6t"});
+	check(15, 1, {"a2z:1", "c6t:1"});
+	check(15, 2, {"a2z:2", "f4v"});
+	check(15, 2, {"a2z:2", "f4v:2"});
+	check(15, 3, {"a2z:3", "d1x"});
+	check(15, 3, {"a2z:3", "d1x:3"});
+	check(15, 4, {"a2z:4", "c1u"});
+	check(15, 4, {"a2z:4", "c1u:4"});
+	check(15, 5, {"a2z:5", "a4w"});
+	check(15, 5, {"a2z:5", "a4w:5"});
+	check(15, 6, {"a2z:6", "d6y"});
+	check(15, 6, {"a2z:6", "d6y:6"});
+	check(15, 7, {"a2z:7", "f3s"});
+	check(15, 7, {"a2z:7", "f3s:7"});
+
+	//intuitively this should work, but it is backwards
+//	check(15, 1, {"a2z:1", "a3z:0"});
+	//these work though
+	check(15, 1, {"a2z:1", "f4v:0"});
+	check(15, 1, {"a2z:1", "c6t:1"});
+	check(15, 1, {"a2z:1", "a3z:2"});
+	check(15, 1, {"a2z:1", "d1x:3"});
+
+	check(3244131, 0, {"a3z", "c3z", "c6z", "c4z"});
+	check(3244131, 5, {"a4z", "c4z", "c1z", "c3z"});
+
+}

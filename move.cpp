@@ -3,15 +3,35 @@
 
 
 void check(const std::string a, int ao, const std::string b, int bo) {
-//	printf("%s %2i <=> %s %2i ", a.c_str(), ao, b.c_str(), bo);
+	printf("%s %2i <=> %s %2i ", a.c_str(), ao, b.c_str(), bo);
 	Move am = Move(b, bo).rotate(ao);
 	Move bm = Move(a, ao).rotate(bo);
-//	printf("  :  %s %2i <=> %s %2i\n", am.to_s().c_str(), am.o, bm.to_s().c_str(), bm.o);
+	printf("  :  %s %2i <=> %s %2i\n", am.to_s().c_str(), am.o, bm.to_s().c_str(), bm.o);
 	assert(bm == Move(b, bo));
 	assert(am == Move(a, ao));
 }
 
 void Move::test() {
+	printf("move tests\n");
+	check("a2z", 0, "a2z", 0);
+	check("a2z", 1, "b6t", 0);
+	check("a2z", 2, "f5v", 0);
+	check("a2z", 3, "e1x", 0);
+	check("a2z", 4, "b1u", 0);
+	check("a2z", 5, "a5w", 0);
+	check("a2z", 6, "e6y", 0);
+	check("a2z", 7, "f2s", 0);
+
+	check("a2z", 0, "a2z", 0);
+	check("a2z", 0, "b6t", 3);
+	check("a2z", 0, "f5v", 2);
+	check("a2z", 0, "e1x", 1);
+	check("a2z", 0, "b1u", 4);
+	check("a2z", 0, "a5w", 5);
+	check("a2z", 0, "e6y", 6);
+	check("a2z", 0, "f2s", 7);
+
+
 	check("b1s", 0, "b1s", 0);
 	check("b1s", 0, "f2y", 1);
 	check("b1s", 0, "e6w", 2);

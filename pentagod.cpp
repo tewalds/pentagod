@@ -12,6 +12,7 @@ void die(int code, const string & str){
 }
 
 int main(int argc, char **argv){
+	Board::test();
 	Move::test();
 
 	srand(Time().in_msec());
@@ -63,4 +64,3 @@ int main(int argc, char **argv){
 	gtp.run();
 	return 0;
 }
-

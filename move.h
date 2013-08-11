@@ -115,18 +115,16 @@ Given the two board rotations, what move rotation is needed?
 2,0 => 2, 2,1 => 1, 2,2 => 0, 2,3 => 3
 3,0 => 3, 3,1 => 2, 3,2 => 1, 3,3 => 0
 
-(4+o-other)&3
+(4+other-o)&3
 
 Given the two board flips, do we need to flip the move or change the direction of rotation?
 0,0 => 0, 0,1 => 1
 1,0 => 2, 1,1 => 3
 
-(o<<1) | other
+(other<<1) | o
 */
 
 		unsigned int c = ((other&4)<<1) | (o&4) | ((4 + (other&3) - (o&3))&3);
-//		unsigned int c = ((o&4)<<1) | (other&4) | ((4 + (o&3) - (other&3))&3); // reversed, but WRONG
-//		printf(" :  %2i -> %2i = %#4x ", o, other, c);
 
 		switch(c){
 		case 0x0: case 0xC: return *this;

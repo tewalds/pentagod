@@ -28,7 +28,7 @@ void check(const std::string a, const std::string b) {
 
 
 void check_many(std::string in, std::initializer_list<std::string> moves){
-//	assert(moves.length() == 8);
+	assert(moves.size() == 8);
 	int r = 0;
 	for(std::string out : moves){
 		check(in, out + ":" + to_str(r));
@@ -48,17 +48,4 @@ void Move::test() {
 	check_many("a2z:5", {"f2s", "b1u", "a5w", "e6y", "b6t", "a2z", "e1x", "f5v"});
 	check_many("a2z:6", {"e6y", "f2s", "b1u", "a5w", "f5v", "b6t", "a2z", "e1x"});
 	check_many("a2z:7", {"a5w", "e6y", "f2s", "b1u", "e1x", "f5v", "b6t", "a2z"});
-
-/*
-	//reversed from/to, but WRONG!!
-	//                     0      1      2      3      4      5      6      7
-	check_many("a2z:0", {"a2z", "e1x", "f5v", "b6t", "b1u", "f2s", "e6y", "a5w"});
-	check_many("a2z:1", {"b6t", "a2z", "e1x", "f5v", "a5w", "b1u", "f2s", "e6y"});
-	check_many("a2z:2", {"f5v", "b6t", "a2z", "e1x", "e6y", "a5w", "b1u", "f2s"});
-	check_many("a2z:3", {"e1x", "f5v", "b6t", "a2z", "f2s", "e6y", "a5w", "b1u"});
-	check_many("a2z:4", {"b1u", "a5w", "e6y", "f2s", "a2z", "b6t", "f5v", "e1x"});
-	check_many("a2z:5", {"f2s", "b1u", "a5w", "e6y", "e1x", "a2z", "b6t", "f5v"});
-	check_many("a2z:6", {"e6y", "f2s", "b1u", "a5w", "f5v", "e1x", "a2z" ,"b6t"});
-	check_many("a2z:7", {"a5w", "e6y", "f2s", "b1u", "b6t", "f5v", "e1x", "a2z"});
-*/
 }

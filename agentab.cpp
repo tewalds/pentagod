@@ -76,14 +76,6 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 	Move bestmove = M_RESIGN;
 	Node * node;
 
-//	const uint64_t find = 593550;
-
-//	if(board.hash() == find){
-//		logerr("Found: hash: " + to_str(board.hash()) + ", orientation: " + to_str(board.orient()) + ", state: " + board.state() + "\n");
-//		logerr(board.to_s());
-//		logerr("\n");
-//	}
-
 	if(TT && (node = tt_get(board)) && node->depth >= depth){
 		switch(node->flag){
 		case VALID:  return node->score;
@@ -100,11 +92,11 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 			Board n = board;
 			bool move_success = n.move(bestmove);
 
-			if(!move_success){
-				logerr("FAIL!!!\nhash: " + to_str(board.hash()) + ", orientation: " + to_str(board.orient()) + ", state: " + board.state() + "\n");
-				logerr(node->to_s(board.orient()) + "\n");
-				logerr(board.to_s());
-			}
+//			if(!move_success){
+//				logerr("FAIL!!!\nhash: " + to_str(board.hash()) + ", orientation: " + to_str(board.orient()) + ", state: " + board.state() + "\n");
+//				logerr(node->to_s(board.orient()) + "\n");
+//				logerr(board.to_s());
+//			}
 
 			assert(move_success);
 			score = -negamax(n, -beta, -alpha, depth-1);
@@ -131,13 +123,6 @@ int16_t AgentAB::negamax(const Board & board, int16_t alpha, int16_t beta, int d
 		uint8_t flag = (score <= alpha ? UBOUND :
 		                score >= beta  ? LBOUND : VALID);
 		tt_set(Node(board.hash(), score, bestmove, depth, flag));
-
-//		if(board.hash() == find){
-//			logerr("Setting: hash: " + to_str(board.hash()) + ", orientation: " + to_str(board.orient()) + ", state: " + board.state() + "\n");
-//			logerr(tt_get(board.hash())->to_s() + "\n");
-//			logerr(board.to_s());
-//			logerr("\n");
-//		}
 	}
 	return score;
 }

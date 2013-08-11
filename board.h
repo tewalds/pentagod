@@ -188,8 +188,8 @@ public:
 		orientation = 8; //start with an unoriented board
 
 
-		if(m != mo)
-			logerr(mo.to_s(true) + " -> " + m.to_s(true) + " -> " + to_str(orient()) + "\n");
+//		if(m != mo)
+//			logerr(mo.to_s(true) + " -> " + m.to_s(true) + " -> " + to_str(orient()) + "\n");
 
 		return true;
 	}
@@ -298,9 +298,9 @@ private:
 		choose(m, (    rotate_hash(h) ), o, 3);
 		b.flip_board();
 		choose(m, (h = b.simple_hash()), o, 4);
-		choose(m, (h = rotate_hash(h) ), o, 7); //why are 5 and 7 reversed?
+		choose(m, (h = rotate_hash(h) ), o, 5);
 		choose(m, (h = rotate_hash(h) ), o, 6);
-		choose(m, (    rotate_hash(h) ), o, 5);
+		choose(m, (    rotate_hash(h) ), o, 7);
 
 		orientation = o;
 		return m;

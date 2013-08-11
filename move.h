@@ -124,7 +124,8 @@ Given the two board flips, do we need to flip the move or change the direction o
 (o<<1) | other
 */
 
-		unsigned int c = ((o&4)<<1) | (other&4) | ((4 + (o&3) - (other&3))&3);
+		unsigned int c = ((other&4)<<1) | (o&4) | ((4 + (other&3) - (o&3))&3);
+//		unsigned int c = ((o&4)<<1) | (other&4) | ((4 + (o&3) - (other&3))&3); // reversed, but WRONG
 //		printf(" :  %2i -> %2i = %#4x ", o, other, c);
 
 		switch(c){
@@ -134,10 +135,10 @@ Given the two board flips, do we need to flip the move or change the direction o
 		case 0x2: case 0xE: return Move(5-x(), 5-y(), (r+4)&7, other);
 		case 0x3: case 0xD: return Move(  y(), 5-x(), (r+6)&7, other);
 
-		case 0x8: case 0x4: return Move(  y(),   x(), ( 9-r)&7, other);
-		case 0x9: case 0x7: return Move(5-x(),   y(), (11-r)&7, other);
-		case 0xA: case 0x6: return Move(5-y(), 5-x(), (13-r)&7, other);
-		case 0xB: case 0x5: return Move(  x(), 5-y(), (15-r)&7, other);
+		case 0x4: case 0x8: return Move(  y(),   x(), ( 9-r)&7, other);
+		case 0x5: case 0xB: return Move(5-x(),   y(), (11-r)&7, other);
+		case 0x6: case 0xA: return Move(5-y(), 5-x(), (13-r)&7, other);
+		case 0x7: case 0x9: return Move(  x(), 5-y(), (15-r)&7, other);
 		default:
 			printf("o: %i, other: %i, c: %#4x", o, other, c);
 			assert(false && "Bad orientation?!?");

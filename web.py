@@ -1,9 +1,10 @@
 #!/usr/bin/python
 
 from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
+from SocketServer import ThreadingMixIn
 from os import curdir, sep
 from gtp import GTPClient
-import urllib, urlparse
+import os, time, hashlib, urllib, urlparse
 
 webroot = curdir + sep + "pentagoo"
 port = 8080
@@ -32,6 +33,8 @@ for k,v in rmap.iteritems(): inv_rmap[v] = k
 
 
 class PentagoHandler(BaseHTTPRequestHandler):
+	protocol_version="HTTP/1.1"
+
 	#Handler for the GET requests
 	def do_GET(self):
 		if '?' in self.path:
@@ -67,10 +70,14 @@ class PentagoHandler(BaseHTTPRequestHandler):
 			if gtp:
 				gtp.close()
 
+		body = inv_xmap[r[1]] + inv_ymap[r[0]] + inv_rmap[r[2]]
+
 		self.send_response(200)
 		self.send_header('Content-type', mime_types["html"])
+		self.send_header('Content-Length', len(body))
+#		self.send_header('Connection', 'close')
 		self.end_headers()
-		self.wfile.write(inv_xmap[r[1]] + inv_ymap[r[0]] + inv_rmap[r[2]])
+		self.wfile.write(body)
 
 	def serve_static(self, uri, params):
 		if uri == "/":
@@ -82,24 +89,46 @@ class PentagoHandler(BaseHTTPRequestHandler):
 		ending = uri.split('.')[-1]
 		if ending in mime_types:
 			try:
-				f = open(webroot + sep + uri)
+				filename = webroot + sep + uri
+				f = open(filename, 'rb')
+				st = os.fstat( f.fileno() )
+				length = st.st_size
+				data = f.read()
+				md5 = hashlib.md5()
+				md5.update(data)
+				md5_key = self.headers.getheader('If-None-Match')
+				if md5_key and md5_key[1:-1] == md5.hexdigest():
+					self.send_response(304)
+					self.send_header('ETag', '"{0}"'.format(md5.hexdigest()))
+					self.send_header('Keep-Alive', 'timeout=5, max=100')
+					self.end_headers()
+					return
 				self.send_response(200)
 				self.send_header('Content-type', mime_types[ending])
+				self.send_header('Content-Length', length )
+				self.send_header('ETag', '"{0}"'.format(md5.hexdigest()))
+				self.send_header('Accept-Ranges', 'bytes')
+				self.send_header('Last-Modified', time.strftime("%a %d %b %Y %H:%M:%S GMT",time.localtime(os.path.getmtime(filename))))
 				self.end_headers()
-				self.wfile.write(f.read())
+				self.wfile.write(data)
 				f.close()
 			except IOError:
 				self.send_error(404,'File Not Found: %s' % self.path)
 		else:
 			self.send_error(404, "Unknown file type")
 
+
+
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
+
 try:
 	#Create a web server and define the handler to manage the incoming request
-	server = HTTPServer(('', port), PentagoHandler)
+	server = ThreadedHTTPServer(('', port), PentagoHandler)
 	print 'Started httpserver on port', port
 	server.serve_forever()
 
 except KeyboardInterrupt:
 	print '^C received, shutting down the web server'
 	server.socket.close()
-

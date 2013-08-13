@@ -47,6 +47,7 @@ public:
 	uint64_t nodes_seen;
 	double time_used;
 	XORShift_uint32 rand;
+	int randomness;
 
 	AgentAB() : rand(std::rand()) {
 		maxdepth = 0;
@@ -54,6 +55,8 @@ public:
 		time_used = 0;
 		TT = NULL;
 		set_memlimit(100*1024*1024);
+
+		randomness = 2;
 	}
 	~AgentAB() { }
 

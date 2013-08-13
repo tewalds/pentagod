@@ -46,7 +46,7 @@ class Board{
 	static const int16_t default_score = 0xDEAD;
 public:
 	static const short unique_depth = 10;  //look for redundant moves up to this depth
-	static const short fullhash_depth = 50; //also consider rotations/mirrors of the board
+	static const short fullhash_depth = 7; //also consider rotations/mirrors of the board
 
 	Board(){
 		sides[0] = 0;

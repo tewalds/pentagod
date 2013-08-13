@@ -108,35 +108,20 @@ flip move:  Move(y, x, (9-r)&7). Works because (9-1)&7=8&7=0, (9-1)&7=8&7=0
 rotate cw:  Move(5-y,   x, (r+2)&7)
 rotate 180: Move(5-x, 5-y, (r+4)&7)
 rotate ccw: Move(  y, 5-x, (r+6)&7)
-
-Given the two board rotations, what move rotation is needed?
-0,0 => 0, 0,1 => 3, 0,2 => 2, 0,3 => 1
-1,0 => 1, 1,1 => 0, 1,2 => 3, 1,3 => 2
-2,0 => 2, 2,1 => 1, 2,2 => 0, 2,3 => 3
-3,0 => 3, 3,1 => 2, 3,2 => 1, 3,3 => 0
-
-(4+other-o)&3
-
-Given the two board flips, do we need to flip the move or change the direction of rotation?
-0,0 => 0, 0,1 => 1
-1,0 => 2, 1,1 => 3
-
-(other<<1) | o
 */
 
-		unsigned int c = ((other&4)<<1) | (o&4) | ((4 + (other&3) - (o&3))&3);
-
+		unsigned int c = o*8 + other;
 		switch(c){
-		case 0x0: case 0xC: return *this;
-		                         //Move(  x(),   y(),       r, other);
-		case 0x1: case 0xF: return Move(5-y(),   x(), (r+2)&7, other);
-		case 0x2: case 0xE: return Move(5-x(), 5-y(), (r+4)&7, other);
-		case 0x3: case 0xD: return Move(  y(), 5-x(), (r+6)&7, other);
+		case  0: case 011: case 022: case 033: case 044: case 055: case 066: case 077: return *this;
+		                                                                                    //Move(  x(),   y(),       r, other);
+		case 01: case 012: case 023: case 030: case 047: case 054: case 065: case 076: return Move(5-y(),   x(), (r+2)&7, other);
+		case 02: case 013: case 020: case 031: case 046: case 057: case 064: case 075: return Move(5-x(), 5-y(), (r+4)&7, other);
+		case 03: case 010: case 021: case 032: case 045: case 056: case 067: case 074: return Move(  y(), 5-x(), (r+6)&7, other);
 
-		case 0x4: case 0x8: return Move(  y(),   x(), ( 9-r)&7, other);
-		case 0x5: case 0xB: return Move(5-x(),   y(), (11-r)&7, other);
-		case 0x6: case 0xA: return Move(5-y(), 5-x(), (13-r)&7, other);
-		case 0x7: case 0x9: return Move(  x(), 5-y(), (15-r)&7, other);
+		case 04: case 015: case 026: case 037: case 040: case 051: case 062: case 073: return Move(  y(),   x(), ( 9-r)&7, other);
+		case 07: case 014: case 025: case 036: case 041: case 052: case 063: case 070: return Move(5-x(),   y(), (11-r)&7, other);
+		case 06: case 017: case 024: case 035: case 042: case 053: case 060: case 071: return Move(5-y(), 5-x(), (13-r)&7, other);
+		case 05: case 016: case 027: case 034: case 043: case 050: case 061: case 072: return Move(  x(), 5-y(), (15-r)&7, other);
 		default:
 			printf("o: %i, other: %i, c: %#4x", o, other, c);
 			assert(false && "Bad orientation?!?");

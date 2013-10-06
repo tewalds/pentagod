@@ -180,8 +180,8 @@ bool AgentPNS::PNSThread::pns(const Board & board, Node * node, int depth, uint3
 	bool mem;
 	do{
 		Node * child = node->children.begin(),
-		        * child2 = node->children.begin(),
-		        * childend = node->children.end();
+		     * child2 = node->children.begin(),
+		     * childend = node->children.end();
 
 		uint32_t tpc, tdc;
 
@@ -348,4 +348,3 @@ void AgentPNS::garbage_collect(Node * node){
 		}
 	}
 }
-
